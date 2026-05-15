@@ -198,6 +198,27 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
 .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:11px}
 .legend-item{display:flex;align-items:center;gap:4px}
 .legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* ── MODE TOGGLE ── */
+.mode-toggle-bar{display:flex;background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:5px;margin-bottom:11px;gap:5px}
+.mode-btn{flex:1;padding:12px 5px;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;background:transparent;color:var(--tm);transition:all .2s;line-height:1.3}
+.mode-btn.active{background:linear-gradient(135deg,var(--bd),var(--bm));color:#fff;box-shadow:0 2px 8px rgba(26,58,92,.25)}
+/* Disabled IN/OUT inputs in awal mode */
+.num-input:disabled{background:#f0f2f5;color:#c4cad4;border-color:#e0e4ea;cursor:not-allowed;font-weight:400}
+/* Auto-load info box */
+.autoload-box{background:#f0fdf4;border:1.5px solid #86efac;border-radius:9px;padding:11px 13px;margin-bottom:11px;display:none}
+.autoload-box.show{display:block}
+.autoload-box.warn{background:#fffbeb;border-color:#fde68a}
+.autoload-box p{font-size:13px;color:#14532d;font-weight:600;margin-bottom:4px}
+.autoload-box.warn p{color:#92400e}
+.autoload-box small{font-size:12px;color:#166534}
+.autoload-box.warn small{color:#78350f}
+.btn-autoload{margin-top:8px;padding:9px 14px;background:var(--bd);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;width:100%}
+/* Status badge in history — Awal vs Selesai */
+.b-awal{background:#fef3c7;color:#92400e}
+.b-selesai{background:#dcfce7;color:#14532d}
+/* Dimmed column header when disabled */
+.th-dim{opacity:.4;transition:opacity .2s}
 </style>
 </head>
 <body>
@@ -241,14 +262,27 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
       </div>
     </div>
 
+    <!-- Mode Toggle -->
+    <div class="mode-toggle-bar">
+      <button id="btnModeAwal" class="mode-btn active" onclick="setMode('awal')">🌅 Awal Shift<br><small style="font-size:11px;font-weight:400;opacity:.85">Isi kolom Awal</small></button>
+      <button id="btnModeAkhir" class="mode-btn" onclick="setMode('akhir')">🌆 Akhir Shift<br><small style="font-size:11px;font-weight:400;opacity:.85">Isi kolom In & Out</small></button>
+    </div>
+
+    <!-- Auto-load status box (Akhir mode) -->
+    <div class="autoload-box" id="autoloadBox">
+      <p id="autoloadMsg">📥 Data awal shift berhasil dimuat!</p>
+      <small id="autoloadSub">Kolom Awal sudah terisi otomatis. Lanjutkan mengisi In dan Out.</small>
+      <button class="btn-autoload" onclick="tryAutoLoad()">🔄 Muat Ulang Data Awal</button>
+    </div>
+
     <div class="card">
       <div class="card-title">🚬 Rokok</div>
       <table class="item-table">
         <thead><tr>
           <th style="width:38%">Item</th>
           <th style="width:15.5%">Awal</th>
-          <th style="width:15.5%">In</th>
-          <th style="width:15.5%">Out</th>
+          <th class="th-in" style="width:15.5%">In</th>
+          <th class="th-out" style="width:15.5%">Out</th>
           <th style="width:15.5%">Sisa</th>
         </tr></thead>
         <tbody id="tbodyRokok"></tbody>
@@ -261,8 +295,8 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
         <thead><tr>
           <th style="width:38%">Item</th>
           <th style="width:15.5%">Awal</th>
-          <th style="width:15.5%">In</th>
-          <th style="width:15.5%">Out</th>
+          <th class="th-in" style="width:15.5%">In</th>
+          <th class="th-out" style="width:15.5%">Out</th>
           <th style="width:15.5%">Sisa</th>
         </tr></thead>
         <tbody id="tbodyTambahan"></tbody>
@@ -281,7 +315,7 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
       <textarea id="inputCatatan" class="form-control" placeholder="Catatan tambahan shift ini..."></textarea>
     </div>
 
-    <button class="btn-primary" onclick="saveAndShow()">💾 Simpan & Buat Gambar</button>
+    <button id="btnSave" class="btn-primary" onclick="saveAndShow()">📸 Simpan & Cetak Gambar Awal Shift</button>
     <button class="btn-secondary" onclick="resetForm()">🔄 Reset Form</button>
   </div>
 
@@ -463,6 +497,8 @@ let DB_URL   = '';
 let IS_LOCAL = true; // default: local until Firebase is connected
 let CFG = { rokok: [...DEFAULT_CFG.rokok], tambahan: [...DEFAULT_CFG.tambahan] };
 let _formDirty = false;
+let currentMode = 'awal';    // 'awal' | 'akhir'
+let _awalRecordKey = null;   // Firebase key of the matched awal-status record
 
 // ═══════════════════════════════════════════
 // FIREBASE REST API
@@ -534,6 +570,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     console.error(e);
     // Fallback to defaults silently
   } finally { hideLoading(); }
+
+  // When name/date/shift change in akhir mode, re-attempt auto-load
+  ['inputName','inputDate','inputShift'].forEach(fid => {
+    const el = document.getElementById(fid);
+    if (el) el.addEventListener('change', () => { if (currentMode==='akhir') tryAutoLoad(); });
+  });
 });
 
 function updateDBStatusUI() {
@@ -610,6 +652,7 @@ function buildForm() {
 function fillTable(tbId, items, pfx) {
   const tb = document.getElementById(tbId);
   tb.innerHTML = '';
+  const inOutDis = currentMode === 'awal' ? 'disabled' : '';
   items.forEach((name,i) => {
     const id=`${pfx}${i}`;
     const tr=document.createElement('tr');
@@ -617,11 +660,113 @@ function fillTable(tbId, items, pfx) {
     tr.innerHTML=`
       <td>${name}</td>
       <td><input class="num-input" type="number" id="${id}_a" min="0" inputmode="numeric" oninput="onInput('${id}')"></td>
-      <td><input class="num-input" type="number" id="${id}_i" min="0" inputmode="numeric" oninput="onInput('${id}')"></td>
-      <td><input class="num-input" type="number" id="${id}_o" min="0" inputmode="numeric" oninput="onInput('${id}')"></td>
+      <td><input class="num-input in-inp" type="number" id="${id}_i" min="0" inputmode="numeric" oninput="onInput('${id}')" ${inOutDis}></td>
+      <td><input class="num-input out-inp" type="number" id="${id}_o" min="0" inputmode="numeric" oninput="onInput('${id}')" ${inOutDis}></td>
       <td class="sisa-cell" id="${id}_s">–</td>`;
     tb.appendChild(tr);
   });
+}
+
+// ─── setMode: switch between Awal and Akhir phase ───
+function setMode(mode) {
+  currentMode = mode;
+  _awalRecordKey = null;
+
+  // Toggle mode buttons
+  document.getElementById('btnModeAwal').classList.toggle('active', mode === 'awal');
+  document.getElementById('btnModeAkhir').classList.toggle('active', mode === 'akhir');
+
+  // Enable/disable IN & OUT inputs
+  document.querySelectorAll('.in-inp, .out-inp').forEach(inp => {
+    inp.disabled = (mode === 'awal');
+    if (mode === 'awal') { inp.value = ''; inp.classList.remove('err','is-zero'); }
+  });
+
+  // Dim IN/OUT headers when in awal mode
+  document.querySelectorAll('.th-in, .th-out').forEach(th => {
+    th.classList.toggle('th-dim', mode === 'awal');
+  });
+
+  // Update save button label
+  const saveBtn = document.getElementById('btnSave');
+  if (saveBtn) saveBtn.textContent = mode === 'awal'
+    ? '📸 Simpan & Cetak Gambar Awal Shift'
+    : '💾 Simpan & Cetak Gambar Akhir Shift';
+
+  // Hide auto-load box (will show again after tryAutoLoad result)
+  const box = document.getElementById('autoloadBox');
+  box.classList.remove('show','warn');
+
+  // Recalc all SISA
+  CFG.rokok.forEach((_,i) => onInput(`r${i}`));
+  CFG.tambahan.forEach((_,i) => onInput(`t${i}`));
+
+  // In akhir mode, attempt to auto-load awal data
+  if (mode === 'akhir') tryAutoLoad();
+}
+
+// ─── tryAutoLoad: fetch existing awal-status record and pre-fill AWAL column ───
+async function tryAutoLoad() {
+  const date  = document.getElementById('inputDate').value;
+  const shift = document.getElementById('inputShift').value;
+  const name  = document.getElementById('inputName').value.trim();
+  const box   = document.getElementById('autoloadBox');
+  const msg   = document.getElementById('autoloadMsg');
+  const sub   = document.getElementById('autoloadSub');
+
+  if (!name) {
+    box.className = 'autoload-box warn show';
+    msg.textContent = '⚠️ Isi nama pegawai dahulu';
+    sub.textContent = 'Data awal shift akan dimuat otomatis setelah nama diisi.';
+    return;
+  }
+
+  showLoading('Mencari data awal shift...');
+  try {
+    const all = await dbGet('records') || {};
+    const entry = Object.entries(all).find(([,r]) =>
+      r.date === date && r.shift === shift && r.name === name && r.status === 'awal'
+    );
+    hideLoading();
+
+    if (entry) {
+      const [key, rec] = entry;
+      _awalRecordKey = key;
+
+      // Clear existing inputs first
+      CFG.rokok.forEach((_,i) => clearRow('r'+i));
+      CFG.tambahan.forEach((_,i) => clearRow('t'+i));
+
+      // Fill AWAL values from the saved record
+      (rec.items || []).forEach(item => {
+        const isRokok = item.cat === 'ROKOK';
+        const arr     = isRokok ? CFG.rokok : CFG.tambahan;
+        const pfx     = isRokok ? 'r' : 't';
+        const idx     = arr.indexOf(item.name);
+        if (idx >= 0) {
+          const aEl = document.getElementById(`${pfx}${idx}_a`);
+          if (aEl && item.awal !== '') { aEl.value = item.awal; onInput(`${pfx}${idx}`); }
+        }
+      });
+
+      // Fill catatan
+      document.getElementById('inputCatatan').value = rec.catatan || '';
+
+      box.className = 'autoload-box show';
+      msg.textContent = '✅ Data awal shift berhasil dimuat!';
+      sub.textContent = `Kolom Awal sudah terisi dari laporan ${fmtShort(date)} ${shift}. Lanjutkan mengisi In & Out.`;
+    } else {
+      _awalRecordKey = null;
+      box.className = 'autoload-box warn show';
+      msg.textContent = '⚠️ Data awal shift belum ditemukan';
+      sub.textContent = `Belum ada laporan Awal Shift untuk ${name} · ${fmtShort(date)} · ${shift}.`;
+    }
+  } catch(e) {
+    hideLoading();
+    box.className = 'autoload-box warn show';
+    msg.textContent = '❌ Gagal memuat data awal shift';
+    sub.textContent = e.message;
+  }
 }
 
 // ─── onInput: recalc SISA + apply zero/error styles ───
@@ -671,10 +816,13 @@ function validateForm() {
   if (!nameEl.value.trim()) { nameEl.classList.add('err'); ok=false; first=first||nameEl; }
   else nameEl.classList.remove('err');
 
+  // In awal mode only AWAL column is required; in akhir mode all three columns required
+  const requiredCols = currentMode === 'awal' ? ['a'] : ['a','i','o'];
+
   [{items:CFG.rokok,pfx:'r'},{items:CFG.tambahan,pfx:'t'}].forEach(({items,pfx}) => {
     items.forEach((_,i) => {
       const id=`${pfx}${i}`;
-      ['a','i','o'].forEach(s => {
+      requiredCols.forEach(s => {
         const el=document.getElementById(`${id}_${s}`);
         if (!el) return;
         if (el.value==='') { el.classList.add('err'); ok=false; first=first||el; }
@@ -684,7 +832,10 @@ function validateForm() {
   });
 
   if (!ok) {
-    showToast('⚠️ Semua kolom wajib diisi! (isi 0 jika tidak ada)');
+    const hint = currentMode === 'awal'
+      ? '⚠️ Kolom AWAL wajib diisi semua! (isi 0 jika tidak ada)'
+      : '⚠️ Semua kolom wajib diisi! (isi 0 jika tidak ada)';
+    showToast(hint);
     if (first) setTimeout(()=>first.scrollIntoView({behavior:'smooth',block:'center'}),100);
   }
   return ok;
@@ -708,6 +859,7 @@ function collectData() {
     shift:document.getElementById('inputShift').value,
     name:document.getElementById('inputName').value.trim(),
     catatan:document.getElementById('inputCatatan').value.trim(),
+    status: currentMode === 'awal' ? 'awal' : 'selesai',
     items, savedAt:new Date().toISOString()
   };
 }
@@ -720,13 +872,20 @@ async function saveAndShow() {
   const data=collectData();
   showLoading('Menyimpan data...');
   try {
-    const all=await dbGet('records')||{};
-    const k=Object.keys(all).find(k=>{const r=all[k];return r.date===data.date&&r.shift===data.shift&&r.name===data.name;});
-    if (k) await dbSet(`records/${k}`,data); else await dbPush('records',data);
+    if (currentMode === 'akhir' && _awalRecordKey) {
+      // Akhir mode: update the existing awal-status record
+      await dbSet(`records/${_awalRecordKey}`, data);
+    } else {
+      // Awal mode (or akhir without found awal): upsert by date+shift+name
+      const all=await dbGet('records')||{};
+      const k=Object.keys(all).find(k=>{const r=all[k];return r.date===data.date&&r.shift===data.shift&&r.name===data.name;});
+      if (k) await dbSet(`records/${k}`,data); else await dbPush('records',data);
+    }
     hideLoading();
     document.getElementById('previewImg').src=genImage(data);
     openModal('modalSave');
-    showToast('✅ Data berhasil disimpan!');
+    const label = data.status === 'awal' ? '✅ Laporan Awal Shift disimpan!' : '✅ Laporan Akhir Shift disimpan!';
+    showToast(label);
   } catch(e){ hideLoading(); showToast('❌ Gagal menyimpan: '+e.message); }
 }
 
@@ -736,6 +895,10 @@ function resetForm() {
   CFG.tambahan.forEach((_,i)=>clearRow('t'+i));
   document.getElementById('inputCatatan').value='';
   document.getElementById('inputName').classList.remove('err');
+  // Reset back to awal mode
+  _awalRecordKey = null;
+  document.getElementById('autoloadBox').classList.remove('show','warn');
+  if (currentMode !== 'awal') setMode('awal');
   showToast('🔄 Form di-reset');
 }
 function clearRow(id) {
@@ -762,9 +925,19 @@ async function renderHistory() {
       return;
     }
     el.innerHTML=recs.map(r=>{
-      const bc=r.shift==='Siang'?'b-siang':'b-malam';
+      const bc = r.shift==='Siang'?'b-siang':'b-malam';
+      const statusBadge = r.status==='awal'
+        ? '<span class="hist-badge b-awal" style="margin-left:6px">⏳ Awal</span>'
+        : r.status==='selesai'
+        ? '<span class="hist-badge b-selesai" style="margin-left:6px">✅ Selesai</span>'
+        : '';
       return `<div class="hist-card">
-        <div class="hist-top"><div class="hist-date">📅 ${fmtShort(r.date)}</div><div class="hist-badge ${bc}">${r.shift}</div></div>
+        <div class="hist-top">
+          <div class="hist-date">📅 ${fmtShort(r.date)}</div>
+          <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
+            <div class="hist-badge ${bc}">${r.shift}</div>${statusBadge}
+          </div>
+        </div>
         <div class="hist-name">👤 ${r.name||'—'}</div>
         <div class="hist-time">🕐 ${new Date(r.savedAt).toLocaleString('id-ID')}</div>
         <div class="hist-actions">
@@ -995,9 +1168,14 @@ function genImage(data){
   ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
 
   // Header bar
+  const hdrLabel = data.status==='awal'
+    ? 'LAPORAN AWAL SHIFT'
+    : data.status==='selesai'
+    ? 'LAPORAN AKHIR SHIFT'
+    : 'FORM PENGECEKAN INVENTORY';
   ctx.fillStyle='#1a3a5c';ctx.fillRect(0,0,W,HDR_H);
   sf(ctx,DPR,'bold',15,'Arial');ctx.fillStyle='#fff';ctx.textAlign='center';
-  ctx.fillText('FORM PENGECEKAN INVENTORY',W/2,HDR_H-13*DPR);
+  ctx.fillText(hdrLabel,W/2,HDR_H-13*DPR);
 
   // Meta
   let my=HDR_H+16*DPR;
@@ -1043,19 +1221,30 @@ function genImage(data){
     ctx.fillStyle=(!isNaN(sn)&&sn===0)?'#92400e':(!isNaN(sn)&&sn<0)?'#dc2626':'#374151';
     ctx.fillText(item.name,TX+8*DPR,ry+ROW_H-11*DPR);
 
-    // Awal, In, Out values — zero = dimmed grey
+    // Awal, In, Out values — zero = dimmed grey; In/Out = "–" in awal-status records
     ctx.textAlign='center';
-    [item.awal,item.inVal,item.outVal].forEach((v,i)=>{
+    const isAwalRecord = data.status === 'awal';
+    [item.awal,item.inVal,item.outVal].forEach((v,colIdx)=>{
+      const hideCol = isAwalRecord && colIdx > 0; // hide In & Out for awal report
+      if (hideCol) {
+        sf(ctx,DPR,'400',12,'Arial');ctx.fillStyle='#c4cad4';
+        ctx.fillText('–',cx[colIdx+1],ry+ROW_H-11*DPR);
+        return;
+      }
       const isZ = v==='0'||v===0;
       sf(ctx,DPR,isZ?'400':'600',12,'Arial');
       ctx.fillStyle=isZ?'#b0bbc8':'#374151';
-      ctx.fillText(v===''?'—':String(v),cx[i+1],ry+ROW_H-11*DPR);
+      ctx.fillText(v===''?'—':String(v),cx[colIdx+1],ry+ROW_H-11*DPR);
     });
 
-    // SISA
+    // SISA — for awal records, display AWAL value as SISA (In=0, Out=0)
+    const sisaDisplay = isAwalRecord
+      ? (item.awal===''||item.awal===undefined ? '–' : String(parseFloat(item.awal)||0))
+      : String(item.sisa);
+    const snDisplay = parseFloat(sisaDisplay);
     sf(ctx,DPR,'bold',13,'Arial');
-    ctx.fillStyle=(item.sisa==='–'||isNaN(sn))?'#9ca3af':sn<0?'#dc2626':sn===0?'#d97706':'#1a3a5c';
-    const sisaTxt=sn===0?String(sn)+' ⚠':String(item.sisa);
+    ctx.fillStyle=(sisaDisplay==='–'||isNaN(snDisplay))?'#9ca3af':snDisplay<0?'#dc2626':snDisplay===0?'#d97706':'#1a3a5c';
+    const sisaTxt = snDisplay===0 ? sisaDisplay+' ⚠' : sisaDisplay;
     ctx.fillText(sisaTxt,cx[4],ry+ROW_H-11*DPR);
 
     ctx.strokeStyle='#e5e7eb';ctx.lineWidth=0.8*DPR;
