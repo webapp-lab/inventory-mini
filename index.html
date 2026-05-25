@@ -569,8 +569,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Fallback to defaults silently
   } finally { hideLoading(); }
 
-  // When name/date/shift change in akhir mode, re-attempt auto-load
-  ['inputName','inputDate','inputShift'].forEach(fid => {
+  // Re-load awal data ketika nama/tanggal/shift berubah saat mode akhir
+  let _alTimer;
+  document.getElementById('inputName').addEventListener('input', () => {
+    if (currentMode !== 'akhir') return;
+    clearTimeout(_alTimer);
+    _alTimer = setTimeout(tryAutoLoad, 700); // debounce 700ms
+  });
+  ['inputDate','inputShift'].forEach(fid => {
     const el = document.getElementById(fid);
     if (el) el.addEventListener('change', () => { if (currentMode==='akhir') tryAutoLoad(); });
   });
@@ -594,7 +600,7 @@ function updateDBStatusUI() {
 // ═══════════════════════════════════════════
 async function connectDB() {
   let url = document.getElementById('dbUrlInput').value.trim().replace(/\/$/,'');
-  if (!url.startsWith('https://') || !url.includes('firebaseio')) {
+  if (!url.startsWith('https://') || (!url.includes('firebaseio') && !url.includes('firebasedatabase.app'))) {
     showToast('⚠️ URL Firebase tidak valid!'); return;
   }
   showLoading('Menghubungkan...');
@@ -704,6 +710,10 @@ function setMode(mode) {
 }
 
 // ─── tryAutoLoad: fetch existing awal-status record and pre-fill AWAL column ───
+// Tiga lapisan pencarian agar lebih tangguh:
+//  1. Exact: date + shift + name + status='awal'
+//  2. Fuzzy: date + shift + name (tanpa cek status — untuk record lama)
+//  3. Shift-only: date + shift saja (ambil yang terbaru, kalau nama beda/kosong)
 async function tryAutoLoad() {
   const date  = document.getElementById('inputDate').value;
   const shift = document.getElementById('inputShift').value;
@@ -712,52 +722,84 @@ async function tryAutoLoad() {
   const msg   = document.getElementById('autoloadMsg');
   const sub   = document.getElementById('autoloadSub');
 
-  if (!name) {
-    box.className = 'autoload-box warn show';
-    msg.textContent = '⚠️ Isi nama pegawai dahulu';
-    sub.textContent = 'Data awal shift akan dimuat otomatis setelah nama diisi.';
-    return;
-  }
+  box.classList.remove('show','warn');
 
   showLoading('Mencari data awal shift...');
   try {
     const all = await dbGet('records') || {};
-    const entry = Object.entries(all).find(([,r]) =>
-      r.date === date && r.shift === shift && r.name === name && r.status === 'awal'
-    );
+    const entries = Object.entries(all);
     hideLoading();
+
+    // Helper: record belum selesai (status 'awal' atau tidak ada status)
+    const isAwal = r => r.status === 'awal' || !r.status;
+    // Nama cocok (case-insensitive, trim)
+    const nameMatch = r => r.name && r.name.trim().toLowerCase() === name.toLowerCase();
+
+    let entry = null;
+    let searchNote = '';
+
+    if (name) {
+      // Lapisan 1: tanggal + shift + nama + status awal
+      entry = entries.find(([,r]) => r.date===date && r.shift===shift && nameMatch(r) && isAwal(r));
+      if (entry) { searchNote = ''; }
+
+      // Lapisan 2: tanggal + shift + nama (status apapun kecuali selesai — cek field lama)
+      if (!entry) {
+        entry = entries.find(([,r]) => r.date===date && r.shift===shift && nameMatch(r) && r.status!=='selesai');
+        if (entry) searchNote = '(data ditemukan tanpa status awal)';
+      }
+    }
+
+    // Lapisan 3: tanggal + shift saja — ambil yang terbaru & belum selesai
+    if (!entry) {
+      const candidates = entries
+        .filter(([,r]) => r.date===date && r.shift===shift && isAwal(r))
+        .sort((a,b)=>new Date(b[1].savedAt)-new Date(a[1].savedAt));
+      if (candidates.length > 0) {
+        entry = candidates[0];
+        searchNote = name ? `(nama tidak cocok, memuat data milik "${entry[1].name}")` : '';
+      }
+    }
 
     if (entry) {
       const [key, rec] = entry;
       _awalRecordKey = key;
 
-      // Clear existing inputs first
+      // Isi nama ke form jika masih kosong
+      if (!name && rec.name) document.getElementById('inputName').value = rec.name;
+
+      // Bersihkan dulu, lalu isi kolom Awal
       CFG.rokok.forEach((_,i) => clearRow('r'+i));
       CFG.tambahan.forEach((_,i) => clearRow('t'+i));
 
-      // Fill AWAL values from the saved record
       (rec.items || []).forEach(item => {
         const isRokok = item.cat === 'ROKOK';
-        const arr     = isRokok ? CFG.rokok : CFG.tambahan;
-        const pfx     = isRokok ? 'r' : 't';
-        const idx     = arr.indexOf(item.name);
+        const arr = isRokok ? CFG.rokok : CFG.tambahan;
+        const pfx = isRokok ? 'r' : 't';
+        const idx = arr.indexOf(item.name);
         if (idx >= 0) {
-          const aEl = document.getElementById(`${pfx}${idx}_a`);
-          if (aEl && item.awal !== '') { aEl.value = item.awal; onInput(`${pfx}${idx}`); }
+          const id  = `${pfx}${idx}`;
+          const aEl = document.getElementById(`${id}_a`);
+          const iEl = document.getElementById(`${id}_i`);
+          const oEl = document.getElementById(`${id}_o`);
+          if (aEl) aEl.value = item.awal ?? '';
+          // Default IN & OUT ke 0 — pegawai hanya ubah yang perlu
+          if (iEl) { iEl.value = '0'; }
+          if (oEl) { oEl.value = '0'; }
+          onInput(id);
         }
       });
 
-      // Fill catatan
       document.getElementById('inputCatatan').value = rec.catatan || '';
 
       box.className = 'autoload-box show';
-      msg.textContent = '✅ Data awal shift berhasil dimuat!';
-      sub.textContent = `Kolom Awal sudah terisi dari laporan ${fmtShort(date)} ${shift}. Lanjutkan mengisi In & Out.`;
+      msg.textContent = `✅ Data Awal Shift "${rec.name}" dimuat!`;
+      sub.textContent = `${fmtShort(rec.date)} · ${rec.shift} · Lanjutkan mengisi kolom In & Out. ${searchNote}`.trim();
     } else {
       _awalRecordKey = null;
       box.className = 'autoload-box warn show';
       msg.textContent = '⚠️ Data awal shift belum ditemukan';
-      sub.textContent = `Belum ada laporan Awal Shift untuk ${name} · ${fmtShort(date)} · ${shift}.`;
+      sub.textContent = `Tidak ada laporan Awal Shift untuk shift ${shift} tanggal ${fmtShort(date)}. Pastikan laporan Awal sudah disimpan terlebih dahulu.`;
     }
   } catch(e) {
     hideLoading();
