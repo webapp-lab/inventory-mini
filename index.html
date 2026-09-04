@@ -6,219 +6,241 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1a3a5c">
+<meta name="theme-color" content="#4338CA">
 <title>Inventory App</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bd:#1a3a5c; --bm:#2563a8; --bl:#dbeafe; --bx:#f0f6ff;
-  --rd:#dc2626; --gn:#16a34a; --gb:#f3f4f6; --br:#e5e7eb;
-  --tx:#111827; --tm:#6b7280; --r:12px;
-  --sh:0 1px 3px rgba(0,0,0,.10),0 1px 2px rgba(0,0,0,.06);
-  --am:#d97706; --amb:#fffbeb; --ambd:#fde68a;
+  /* ── Material Design 3 inspired, playful palette ── */
+  --bd:#4338CA; --bm:#6366F1; --bl:#E0E7FF; --bx:#F5F6FF;
+  --rd:#DC2626; --gn:#16A34A; --gb:#F6F6FC; --br:#E4E4F0;
+  --tx:#1C1B29; --tm:#6B7280; --r:18px; --rb:999px;
+  --sh:0 2px 10px rgba(67,56,202,.10),0 1px 3px rgba(67,56,202,.08);
+  --sh-btn:0 6px 16px rgba(67,56,202,.32);
+  --am:#D97706; --amb:#FFFBEB; --ambd:#FDE68A;
+  --sec:#F97316; --sec-bg:#FFF3E8; --sec-bd:#FED7AA;
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--gb);color:var(--tx);min-height:100vh;padding-bottom:84px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--gb);color:var(--tx);min-height:100vh;padding-bottom:88px}
 .hidden{display:none!important}
+.ic{width:16px;height:16px;stroke-width:2.2;vertical-align:-3px;flex-shrink:0}
+.spin-ic{animation:spin 1s linear infinite}
+.page-wrap{max-width:640px;margin:0 auto}
 
 /* ── HEADER ── */
-.app-header{background:linear-gradient(135deg,var(--bd) 0%,var(--bm) 100%);color:#fff;padding:12px 14px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:space-between}
-.app-header h1{font-size:16px;font-weight:700}
-.app-header .sub{font-size:11px;opacity:.75;margin-top:1px}
-.btn-adm{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:6px 11px;font-size:12px;cursor:pointer;font-weight:700;white-space:nowrap}
-
-/* ── TABS ── */
-.tab-bar{display:flex;background:#fff;border-bottom:2px solid var(--br);position:sticky;top:56px;z-index:40}
-.tab-btn{flex:1;padding:10px 2px;border:none;background:none;font-size:11px;font-weight:700;color:var(--tm);cursor:pointer;position:relative}
-.tab-btn.active{color:var(--bd)}
-.tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:10%;right:10%;height:2px;background:var(--bd);border-radius:2px 2px 0 0}
+.app-header{background:linear-gradient(135deg,var(--bd) 0%,var(--bm) 100%);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:50;box-shadow:0 4px 14px rgba(67,56,202,.28);border-radius:0 0 22px 22px}
+.app-header-inner{max-width:640px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.app-header h1{font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px;letter-spacing:.2px}
+.app-header h1 .ic{width:20px;height:20px}
+.app-header .sub{font-size:11.5px;opacity:.8;margin-top:2px;margin-left:28px}
+.btn-adm{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.32);color:#fff;border-radius:var(--rb);padding:7px 13px;font-size:12px;cursor:pointer;font-weight:700;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;transition:transform .15s}
+.btn-adm:active{transform:scale(.94)}
 
 /* ── CONTENT ── */
-.tab-content{display:none;padding:13px 11px}
+.tab-content{display:none;padding:14px 12px 4px}
 .tab-content.active{display:block}
 
 /* ── CARD ── */
-.card{background:#fff;border-radius:var(--r);padding:13px 11px;margin-bottom:11px;box-shadow:var(--sh)}
-.card-title{font-size:12px;font-weight:700;color:var(--bd);text-transform:uppercase;letter-spacing:.8px;margin-bottom:9px;padding-bottom:7px;border-bottom:1.5px solid var(--bl)}
+.card{background:#fff;border-radius:var(--r);padding:14px 13px;margin-bottom:12px;box-shadow:var(--sh)}
+.card-title{font-size:12.5px;font-weight:800;color:var(--bd);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;padding-bottom:8px;border-bottom:1.5px solid var(--bl);display:flex;align-items:center;gap:8px}
+.card-title .ic-chip{width:24px;height:24px;border-radius:8px;background:var(--bl);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-title .ic-chip .ic{width:14px;height:14px;color:var(--bd);stroke-width:2.4}
 
 /* ── FORM ── */
 .form-row{display:flex;gap:10px}
 .form-group{flex:1;margin-bottom:9px}
-.form-label{display:block;font-size:11px;font-weight:600;color:var(--tm);margin-bottom:4px}
-.form-control{width:100%;padding:9px 11px;border:1.5px solid var(--br);border-radius:8px;font-size:15px;color:var(--tx);background:#fafafa;-webkit-appearance:none;appearance:none;transition:border-color .2s}
-.form-control:focus{outline:none;border-color:var(--bm);background:#fff}
+.form-label{display:block;font-size:11px;font-weight:700;color:var(--tm);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+.form-control{width:100%;padding:10px 12px;border:1.5px solid var(--br);border-radius:12px;font-size:15px;color:var(--tx);background:#fafafe;-webkit-appearance:none;appearance:none;transition:border-color .2s,box-shadow .2s}
+.form-control:focus{outline:none;border-color:var(--bm);background:#fff;box-shadow:0 0 0 3px var(--bl)}
 .form-control.err{border-color:var(--rd)!important;background:#fff5f5}
-select.form-control{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
-textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
+select.form-control{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+textarea.form-control{resize:vertical;min-height:68px;font-size:14px;border-radius:14px}
 
 /* ── ITEM TABLE ── */
-.item-table{width:100%;border-collapse:collapse}
-.item-table thead th{background:var(--bd);color:#fff;padding:7px 2px;font-size:11px;font-weight:700;text-align:center}
-.item-table thead th:first-child{text-align:left;padding-left:6px}
-/* Default row colors */
+.item-table{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden}
+.item-table thead th{background:var(--bd);color:#fff;padding:8px 2px;font-size:11px;font-weight:700;text-align:center}
+.item-table thead th:first-child{text-align:left;padding-left:8px;border-radius:10px 0 0 0}
+.item-table thead th:last-child{border-radius:0 10px 0 0}
 .item-table tbody tr:nth-child(even) td{background:var(--bx)}
 .item-table tbody tr:nth-child(odd) td{background:#fff}
-/* Row where SISA = 0: amber tint — overrides even/odd */
 .item-table tbody tr.row-zero-sisa td{background:var(--amb)!important}
 .item-table tbody tr.row-zero-sisa td:first-child{color:#92400e}
-/* Row where SISA < 0: light red tint */
 .item-table tbody tr.row-neg-sisa td{background:#fff5f5!important}
 .item-table tbody tr.row-neg-sisa td:first-child{color:var(--rd)}
+.item-table tbody tr.row-legacy td{background:#F3F0FF!important;border-top:1.5px dashed #C7BFFF;border-bottom:1.5px dashed #C7BFFF}
+.item-table tbody tr.row-legacy td:first-child{color:#5B21B6}
+.legacy-tag{display:inline-block;font-size:8.5px;font-weight:800;color:#5B21B6;background:#EDE9FE;border-radius:6px;padding:1px 5px;margin-left:3px;vertical-align:1px;letter-spacing:.3px}
 
-.item-table tbody td{padding:4px 2px;border-bottom:1px solid var(--br);vertical-align:middle}
-.item-table tbody td:first-child{padding-left:6px;font-size:11px;color:#374151}
+.item-table tbody td{padding:5px 2px;border-bottom:1px solid var(--br);vertical-align:middle}
+.item-table tbody td:first-child{padding-left:8px;font-size:11px;color:#374151;font-weight:600}
 
 /* ── NUMBER INPUTS ── */
-.num-input{width:46px;padding:5px 1px;border:1.5px solid var(--br);border-radius:6px;font-size:14px;font-weight:600;text-align:center;background:#fff;color:var(--tx);display:block;margin:0 auto;-webkit-appearance:none;-moz-appearance:textfield;transition:border-color .15s,color .15s,background .15s}
+.num-input{width:46px;padding:6px 1px;border:1.5px solid var(--br);border-radius:9px;font-size:14px;font-weight:700;text-align:center;background:#fff;color:var(--tx);display:block;margin:0 auto;-webkit-appearance:none;-moz-appearance:textfield;transition:border-color .15s,color .15s,background .15s}
 .num-input::-webkit-outer-spin-button,.num-input::-webkit-inner-spin-button{-webkit-appearance:none}
-.num-input:focus{outline:none;border-color:var(--bm)}
+.num-input:focus{outline:none;border-color:var(--bm);box-shadow:0 0 0 3px var(--bl)}
 .num-input.err{border-color:var(--rd)!important;background:#fff5f5!important;color:var(--rd)!important}
-/* Zero value — dimmed, clearly different from non-zero */
 .num-input.is-zero{color:#b0bbc8;background:#f4f6f8;border-color:#dce1e8;font-weight:400}
 
 /* ── SISA CELL ── */
 .sisa-cell{text-align:center;font-weight:800;font-size:14px;color:var(--bd);min-width:34px}
 .sisa-cell.neg{color:var(--rd)}
-/* Zero stock = amber warning — visually distinct from regular values */
-.sisa-cell.zero{color:var(--am);font-size:13px}
-.sisa-cell.zero::after{content:' ⚠';font-size:10px}
+.sisa-cell.zero{color:var(--am);font-size:13px;display:inline-flex;align-items:center;gap:2px}
+.sisa-cell.zero .ic{width:11px;height:11px}
 
 /* ── BUTTONS ── */
-.btn-primary{width:100%;padding:15px;margin-top:4px;background:linear-gradient(135deg,var(--bd),var(--bm));color:#fff;border:none;border-radius:var(--r);font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(26,58,92,.3);transition:transform .1s}
+.btn-primary{width:100%;padding:16px;margin-top:6px;background:linear-gradient(135deg,var(--bd),var(--bm));color:#fff;border:none;border-radius:var(--rb);font-size:16px;font-weight:800;cursor:pointer;box-shadow:var(--sh-btn);transition:transform .12s;display:flex;align-items:center;justify-content:center;gap:9px}
+.btn-primary .ic{width:19px;height:19px}
 .btn-primary:active{transform:scale(.97)}
-.btn-secondary{width:100%;padding:11px;margin-top:6px;background:#fff;color:var(--tm);border:1.5px solid var(--br);border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer}
-.btn-danger{padding:5px 9px;background:#fee2e2;color:var(--rd);border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
-.btn-add{padding:9px 14px;background:var(--gn);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0}
-.btn-connect-sm{width:100%;padding:12px;margin-top:10px;background:linear-gradient(135deg,var(--bd),var(--bm));color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer}
-.btn-disconnect{width:100%;padding:10px;margin-top:6px;background:#fee2e2;color:var(--rd);border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-secondary{width:100%;padding:12px;margin-top:8px;background:#fff;color:var(--tm);border:1.5px solid var(--br);border-radius:var(--rb);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-secondary:active{transform:scale(.97)}
+.btn-danger{padding:6px 10px;background:#fee2e2;color:var(--rd);border:none;border-radius:var(--rb);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.btn-add{padding:10px 15px;background:var(--gn);color:#fff;border:none;border-radius:var(--rb);font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;display:inline-flex;align-items:center;gap:5px}
+.btn-connect-sm{width:100%;padding:13px;margin-top:12px;background:linear-gradient(135deg,var(--bd),var(--bm));color:#fff;border:none;border-radius:var(--rb);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:var(--sh-btn)}
+.btn-disconnect{width:100%;padding:11px;margin-top:8px;background:#fee2e2;color:var(--rd);border:none;border-radius:var(--rb);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
 
 /* ── DB STATUS BADGE ── */
-.db-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:10px}
+.db-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:var(--rb);font-size:11px;font-weight:800;margin-bottom:10px}
 .db-badge.online{background:#dcfce7;color:#14532d}
 .db-badge.offline{background:#f3f4f6;color:#374151}
-.db-url-txt{font-size:12px;color:var(--bd);word-break:break-all;font-weight:600;margin:4px 0 8px}
+.db-url-txt{font-size:12px;color:var(--bd);word-break:break-all;font-weight:700;margin:4px 0 8px}
 
 /* ── HISTORY ── */
-.hist-card{background:#fff;border-radius:var(--r);padding:12px 13px;margin-bottom:10px;box-shadow:var(--sh)}
+.hist-card{background:#fff;border-radius:var(--r);padding:13px 14px;margin-bottom:11px;box-shadow:var(--sh)}
 .hist-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
-.hist-date{font-weight:700;font-size:14px;color:var(--bd)}
-.hist-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
-.b-siang{background:#dcfce7;color:#14532d}
+.hist-date{font-weight:800;font-size:14px;color:var(--bd);display:flex;align-items:center;gap:6px}
+.hist-badge{font-size:11px;font-weight:800;padding:4px 10px;border-radius:var(--rb);white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:4px}
+.b-siang{background:#FFF3E8;color:#9A3412}
 .b-malam{background:#ede9fe;color:#4c1d95}
-.hist-name{font-size:12px;color:var(--tm);margin-top:3px}
-.hist-time{font-size:11px;color:#9ca3af;margin-top:1px}
-.hist-actions{display:flex;gap:7px;margin-top:10px}
-.btn-sm{flex:1;padding:8px 3px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
-.btn-sm:active{opacity:.75}
+.hist-name{font-size:12.5px;color:var(--tm);margin-top:4px;display:flex;align-items:center;gap:6px;font-weight:600}
+.hist-time{font-size:11.5px;color:#9ca3af;margin-top:2px;display:flex;align-items:center;gap:6px}
+.hist-actions{display:flex;gap:7px;margin-top:11px}
+.btn-sm{flex:1;padding:9px 3px;border:none;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.btn-sm:active{opacity:.75;transform:scale(.96)}
 .btn-view{background:var(--bl);color:var(--bd)}
 .btn-dl{background:var(--bd);color:#fff}
-.btn-del{background:#fee2e2;color:var(--rd);flex:0 0 40px}
+.btn-del{background:#fee2e2;color:var(--rd);flex:0 0 42px}
 
 /* ── ITEM MGMT ── */
 .item-list{list-style:none}
-.item-list li{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--br);gap:8px;font-size:13px}
+.item-list li{display:flex;align-items:center;justify-content:space-between;padding:9px 2px;border-bottom:1px solid var(--br);gap:8px;font-size:13px;font-weight:600}
 .item-list li:last-child{border-bottom:none}
-.add-row{display:flex;gap:8px;margin-top:10px}
-.add-inp{flex:1;padding:9px 11px;border:1.5px solid var(--br);border-radius:8px;font-size:14px;color:var(--tx);background:#fafafa}
-.add-inp:focus{outline:none;border-color:var(--bm)}
+.add-row{display:flex;gap:8px;margin-top:11px}
+.add-inp{flex:1;padding:10px 12px;border:1.5px solid var(--br);border-radius:12px;font-size:14px;color:var(--tx);background:#fafafe}
+.add-inp:focus{outline:none;border-color:var(--bm);box-shadow:0 0 0 3px var(--bl)}
 
-/* ── FIREBASE SETUP INLINE (inside settings tab) ── */
-.firebase-setup{border:1.5px dashed #93c5fd;border-radius:10px;padding:14px;margin-top:12px;background:#f0f6ff}
-.firebase-setup h4{font-size:13px;font-weight:700;color:var(--bd);margin-bottom:10px}
-.step-row{display:flex;gap:9px;margin-bottom:8px;align-items:flex-start}
+/* ── FIREBASE SETUP INLINE ── */
+.firebase-setup{border:1.5px dashed #A5B4FC;border-radius:14px;padding:15px;margin-top:13px;background:var(--bx)}
+.firebase-setup h4{font-size:13px;font-weight:800;color:var(--bd);margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.step-row{display:flex;gap:9px;margin-bottom:9px;align-items:flex-start}
 .step-dot{min-width:20px;height:20px;background:var(--bd);color:#fff;border-radius:50%;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .step-row p{font-size:12px;color:#374151;line-height:1.5}
-.step-row a{color:var(--bm);font-weight:600}
-.step-row code{font-size:11px;background:#e0e7ff;padding:1px 4px;border-radius:3px;word-break:break-all}
-.fb-inp-lbl{font-size:11px;font-weight:700;color:var(--tm);display:block;margin:10px 0 4px}
-.fb-inp{width:100%;padding:10px 11px;border:1.5px solid var(--br);border-radius:8px;font-size:13px;color:var(--tx);background:#fff}
-.fb-inp:focus{outline:none;border-color:var(--bm)}
-.fb-note{font-size:11px;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:7px 9px;margin-top:8px;line-height:1.5}
+.step-row a{color:var(--bm);font-weight:700}
+.step-row code{font-size:11px;background:#e0e7ff;padding:1px 4px;border-radius:4px;word-break:break-all}
+.fb-inp-lbl{font-size:11px;font-weight:700;color:var(--tm);display:block;margin:11px 0 5px;text-transform:uppercase;letter-spacing:.4px}
+.fb-inp{width:100%;padding:11px 12px;border:1.5px solid var(--br);border-radius:12px;font-size:13px;color:var(--tx);background:#fff}
+.fb-inp:focus{outline:none;border-color:var(--bm);box-shadow:0 0 0 3px var(--bl)}
+.fb-note{font-size:11px;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:8px 10px;margin-top:9px;line-height:1.5;display:flex;gap:6px;align-items:flex-start}
+.fb-note .ic{flex-shrink:0;margin-top:1px}
 
 /* ── ADMIN ── */
 #adminScreen{position:fixed;inset:0;background:var(--gb);z-index:500;overflow-y:auto;padding-bottom:40px}
-.adm-header{background:linear-gradient(135deg,#0a1f38,var(--bd));color:#fff;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.25)}
-.adm-header h2{font-size:16px;font-weight:700}
-.adm-header p{font-size:11px;opacity:.7;margin-top:1px}
-.btn-close-adm{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer}
-.adm-filters{background:#fff;padding:13px;margin:11px 11px 0;border-radius:var(--r);box-shadow:var(--sh)}
-.f-lbl{font-size:11px;font-weight:700;color:var(--tm);margin-bottom:4px}
-.btn-filter{width:100%;padding:12px;margin-top:10px;background:var(--bd);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer}
-.adm-body{padding:0 11px}
-.sum-meta{background:var(--bl);border-radius:8px;padding:9px 11px;margin:10px 0;font-size:13px;color:var(--bd);font-weight:600}
-.sec-title{font-size:13px;font-weight:700;color:var(--bd);margin:16px 0 8px}
+.adm-header{background:linear-gradient(135deg,#2A2470,var(--bd));color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 4px 14px rgba(0,0,0,.22);border-radius:0 0 22px 22px}
+.adm-header-inner{max-width:640px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;width:100%}
+.adm-header h2{font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px}
+.adm-header p{font-size:11px;opacity:.75;margin-top:2px;margin-left:26px}
+.btn-close-adm{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.32);color:#fff;border-radius:var(--rb);padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.adm-filters{max-width:640px;margin:12px auto 0;background:#fff;padding:14px;border-radius:var(--r);box-shadow:var(--sh)}
+.f-lbl{font-size:11px;font-weight:700;color:var(--tm);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+.btn-filter{width:100%;padding:13px;margin-top:11px;background:var(--bd);color:#fff;border:none;border-radius:var(--rb);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:var(--sh-btn)}
+.adm-body{max-width:640px;margin:0 auto;padding:0 12px}
+.sum-meta{background:var(--bl);border-radius:12px;padding:10px 12px;margin:11px 0;font-size:13px;color:var(--bd);font-weight:700;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sum-meta span{display:inline-flex;align-items:center;gap:5px}
+.sec-title{font-size:13px;font-weight:800;color:var(--bd);margin:18px 0 9px;display:flex;align-items:center;gap:7px}
 .tbl-wrap{overflow-x:auto;background:#fff;border-radius:var(--r);box-shadow:var(--sh)}
 .adm-table{width:100%;border-collapse:collapse;min-width:300px}
-.adm-table thead th{background:var(--bd);color:#fff;padding:9px 8px;font-size:12px;font-weight:700;text-align:center}
-.adm-table thead th:first-child{text-align:left;padding-left:10px}
-.adm-table tbody td{padding:8px;border-bottom:1px solid var(--br);font-size:13px;text-align:center}
-.adm-table tbody td:first-child{text-align:left;padding-left:10px}
-.adm-table tbody tr.cat-row td{background:var(--bl);font-weight:700;color:var(--bd);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.adm-table thead th{background:var(--bd);color:#fff;padding:10px 8px;font-size:12px;font-weight:700;text-align:center}
+.adm-table thead th:first-child{text-align:left;padding-left:12px}
+.adm-table tbody td{padding:9px 8px;border-bottom:1px solid var(--br);font-size:13px;text-align:center}
+.adm-table tbody td:first-child{text-align:left;padding-left:12px;font-weight:600}
+.adm-table tbody tr.cat-row td{background:var(--bl);font-weight:800;color:var(--bd);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.adm-table tbody tr.cat-row td span{display:inline-flex;align-items:center;gap:6px}
 .adm-table tbody tr:nth-child(even):not(.cat-row) td{background:#f8faff}
-.net-pos{color:var(--gn);font-weight:700}
-.net-neg{color:var(--rd);font-weight:700}
+.net-pos{color:var(--gn);font-weight:800}
+.net-neg{color:var(--rd);font-weight:800}
 .net-z{color:var(--tm)}
-.tot-row td{background:#0a1f38!important;color:#fff!important;font-weight:700!important}
+.tot-row td{background:#2A2470!important;color:#fff!important;font-weight:800!important}
 
 /* ── MODALS ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:flex-end;justify-content:center}
+.overlay{display:none;position:fixed;inset:0;background:rgba(28,27,41,.6);z-index:200;align-items:flex-end;justify-content:center}
 .overlay.open{display:flex}
-.modal{background:#fff;border-radius:20px 20px 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:20px 15px 36px;animation:su .25s ease-out}
+.modal{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:640px;max-height:92vh;overflow-y:auto;padding:22px 16px 36px;animation:su .25s ease-out}
 @keyframes su{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
-.modal-title{font-size:16px;font-weight:700;color:var(--bd)}
-.modal-close{background:var(--gb);border:none;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tm)}
-#previewImg,#histImg{width:100%;border-radius:8px;border:1px solid var(--br);display:block}
-.save-hint{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 11px;margin-top:10px;font-size:12px;color:#78350f;line-height:1.5}
-.btn-dl-full{width:100%;padding:14px;margin-top:12px;background:linear-gradient(135deg,var(--bd),var(--bm));color:#fff;border:none;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.modal-title{font-size:16px;font-weight:800;color:var(--bd);display:flex;align-items:center;gap:8px}
+.modal-close{background:var(--gb);border:none;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tm)}
+#previewImg,#histImg{width:100%;border-radius:14px;border:1px solid var(--br);display:block}
+.save-hint{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:11px 12px;margin-top:11px;font-size:12px;color:#78350f;line-height:1.5}
+.btn-dl-full{width:100%;padding:15px;margin-top:13px;background:linear-gradient(135deg,var(--bd),var(--bm));color:#fff;border:none;border-radius:var(--rb);font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--sh-btn)}
 
 /* ── LOADING ── */
-.loading-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#fff}
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(28,27,41,.55);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:13px;color:#fff}
 .loading-overlay.show{display:flex}
-.spinner{width:40px;height:40px;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+.spinner{width:42px;height:42px;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-msg{font-size:14px;font-weight:600}
+.loading-msg{font-size:14px;font-weight:700}
 
 /* ── TOAST ── */
-.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#1f2937;color:#fff;padding:10px 20px;border-radius:22px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:opacity .25s;white-space:nowrap;pointer-events:none}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:#1C1B29;color:#fff;padding:11px 20px;border-radius:var(--rb);font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .25s,transform .25s;white-space:nowrap;pointer-events:none;display:flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(0,0,0,.3)}
 .toast.show{opacity:1}
+.toast .ic{color:#A5B4FC}
 
-/* ── BOTTOM NAV ── */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid var(--br);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,0px)}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:9px 0 7px;border:none;background:none;cursor:pointer;color:var(--tm);font-size:10px;font-weight:600;gap:3px}
-.nav-btn .ni{font-size:20px}
+/* ── BOTTOM NAV (Material 3 Navigation Bar) ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--br);display:flex;z-index:100;padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 14px rgba(67,56,202,.08)}
+.bottom-nav-inner{max-width:640px;margin:0 auto;display:flex;width:100%}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:4px 0;border:none;background:none;cursor:pointer;color:var(--tm);font-size:10.5px;font-weight:700;gap:4px}
+.nav-pill{width:52px;height:28px;border-radius:var(--rb);display:flex;align-items:center;justify-content:center;transition:background .2s}
+.nav-btn .ic{width:21px;height:21px;stroke-width:2.1}
 .nav-btn.active{color:var(--bd)}
+.nav-btn.active .nav-pill{background:var(--bl)}
 
 /* ── EMPTY ── */
-.empty{text-align:center;padding:44px 20px;color:var(--tm)}
-.empty .ico{font-size:50px;margin-bottom:12px}
-.empty h3{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--tx)}
+.empty{text-align:center;padding:46px 20px;color:var(--tm)}
+.empty .ico{margin-bottom:14px;color:var(--bm)}
+.empty .ico .ic{width:46px;height:46px;stroke-width:1.5}
+.empty h3{font-size:16px;font-weight:800;margin-bottom:6px;color:var(--tx)}
 .empty p{font-size:13px}
 
 /* ── LEGEND ── */
-.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:11px}
-.legend-item{display:flex;align-items:center;gap:4px}
-.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.legend{display:flex;flex-wrap:wrap;gap:9px;margin-top:9px;font-size:11px}
+.legend-item{display:flex;align-items:center;gap:5px;font-weight:600;color:var(--tm)}
+.legend-dot{width:11px;height:11px;border-radius:4px;flex-shrink:0}
 
 /* ── MODE TOGGLE ── */
-.mode-toggle-bar{display:flex;background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:5px;margin-bottom:11px;gap:5px}
-.mode-btn{flex:1;padding:12px 5px;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;background:transparent;color:var(--tm);transition:all .2s;line-height:1.3}
-.mode-btn.active{background:linear-gradient(135deg,var(--bd),var(--bm));color:#fff;box-shadow:0 2px 8px rgba(26,58,92,.25)}
-/* Disabled IN/OUT inputs in awal mode */
+.mode-toggle-bar{display:flex;background:#fff;border-radius:var(--rb);box-shadow:var(--sh);padding:5px;margin-bottom:12px;gap:5px}
+.mode-btn{flex:1;padding:12px 5px;border:none;border-radius:var(--rb);font-size:13.5px;font-weight:800;cursor:pointer;background:transparent;color:var(--tm);transition:all .2s;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:2px}
+.mode-btn .ic{width:17px;height:17px}
+.mode-btn.active{background:linear-gradient(135deg,var(--bd),var(--bm));color:#fff;box-shadow:var(--sh-btn)}
 .num-input:disabled{background:#f0f2f5;color:#c4cad4;border-color:#e0e4ea;cursor:not-allowed;font-weight:400}
-/* Auto-load info box */
-.autoload-box{background:#f0fdf4;border:1.5px solid #86efac;border-radius:9px;padding:11px 13px;margin-bottom:11px;display:none}
+.autoload-box{background:#f0fdf4;border:1.5px solid #86efac;border-radius:14px;padding:12px 14px;margin-bottom:12px;display:none}
 .autoload-box.show{display:block}
 .autoload-box.warn{background:#fffbeb;border-color:#fde68a}
-.autoload-box p{font-size:13px;color:#14532d;font-weight:600;margin-bottom:4px}
+.autoload-box p{font-size:13px;color:#14532d;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
 .autoload-box.warn p{color:#92400e}
-.autoload-box small{font-size:12px;color:#166534}
+.autoload-box small{font-size:12px;color:#166534;line-height:1.5}
 .autoload-box.warn small{color:#78350f}
-.btn-autoload{margin-top:8px;padding:9px 14px;background:var(--bd);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;width:100%}
-/* Status badge in history — Awal vs Selesai */
+.btn-autoload{margin-top:9px;padding:10px 14px;background:var(--bd);color:#fff;border:none;border-radius:var(--rb);font-size:13px;font-weight:700;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:7px}
 .b-awal{background:#fef3c7;color:#92400e}
 .b-selesai{background:#dcfce7;color:#14532d}
-/* Dimmed column header when disabled */
 .th-dim{opacity:.4;transition:opacity .2s}
+
+/* ── RESPONSIVE (tablet / desktop) ── */
+@media (min-width:700px){
+  body{padding-bottom:96px}
+  .app-header{border-radius:0 0 26px 26px}
+  .form-row{gap:14px}
+  .card{padding:18px 20px}
+  .tab-content{padding:20px 16px 4px}
+  .mode-btn{font-size:15px;padding:14px 6px}
+}
 </style>
 </head>
 <body>
@@ -226,37 +248,34 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
 <!-- ════════════════ MAIN APP ════════════════ -->
 <div id="appScreen">
   <div class="app-header">
-    <div>
-      <h1>📦 Cek Inventory</h1>
-      <p class="sub" id="headerDate"></p>
+    <div class="app-header-inner">
+      <div>
+        <h1><i data-lucide="package" class="ic"></i> Cek Inventory</h1>
+        <p class="sub" id="headerDate"></p>
+      </div>
+      <button class="btn-adm" onclick="promptAdmin()"><i data-lucide="lock" class="ic"></i> Admin</button>
     </div>
-    <button class="btn-adm" onclick="promptAdmin()">🔒 Admin</button>
   </div>
 
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('form')">📝 Form</button>
-    <button class="tab-btn" onclick="switchTab('history')">📋 Riwayat</button>
-    <button class="tab-btn" onclick="switchTab('items')">⚙️ Pengaturan</button>
-  </div>
-
+  <div class="page-wrap">
   <!-- ══ FORM TAB ══ -->
   <div id="tab-form" class="tab-content active">
     <div class="card">
-      <div class="card-title">📅 Informasi Shift</div>
+      <div class="card-title"><span class="ic-chip"><i data-lucide="calendar-days" class="ic"></i></span> Informasi Shift</div>
       <div class="form-group">
-        <label class="form-label">HARI / TANGGAL</label>
+        <label class="form-label">Hari / Tanggal</label>
         <input type="date" id="inputDate" class="form-control">
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">SHIFT</label>
+          <label class="form-label">Shift</label>
           <select id="inputShift" class="form-control">
-            <option value="Siang">☀️ Siang</option>
-            <option value="Malam" selected>🌙 Malam</option>
+            <option value="Siang">☀ Siang</option>
+            <option value="Malam" selected>☾ Malam</option>
           </select>
         </div>
         <div class="form-group" style="flex:2">
-          <label class="form-label">NAMA PEGAWAI</label>
+          <label class="form-label">Nama Pegawai</label>
           <input type="text" id="inputName" class="form-control" placeholder="Tulis nama...">
         </div>
       </div>
@@ -264,19 +283,19 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
 
     <!-- Mode Toggle -->
     <div class="mode-toggle-bar">
-      <button id="btnModeAwal" class="mode-btn active" onclick="setMode('awal')">🌅 Awal Shift<br><small style="font-size:11px;font-weight:400;opacity:.85">Isi kolom Awal</small></button>
-      <button id="btnModeAkhir" class="mode-btn" onclick="setMode('akhir')">🌆 Akhir Shift<br><small style="font-size:11px;font-weight:400;opacity:.85">Isi kolom In & Out</small></button>
+      <button id="btnModeAwal" class="mode-btn active" onclick="setMode('awal')"><i data-lucide="sunrise" class="ic"></i> Awal Shift<br><small style="font-size:11px;font-weight:400;opacity:.85">Isi kolom Awal</small></button>
+      <button id="btnModeAkhir" class="mode-btn" onclick="setMode('akhir')"><i data-lucide="sunset" class="ic"></i> Akhir Shift<br><small style="font-size:11px;font-weight:400;opacity:.85">Isi kolom In & Out</small></button>
     </div>
 
     <!-- Auto-load status box (Akhir mode) -->
     <div class="autoload-box" id="autoloadBox">
-      <p id="autoloadMsg">📥 Data awal shift berhasil dimuat!</p>
+      <p id="autoloadMsg"><i data-lucide="download" class="ic"></i> Data awal shift berhasil dimuat!</p>
       <small id="autoloadSub">Kolom Awal sudah terisi otomatis. Lanjutkan mengisi In dan Out.</small>
-      <button class="btn-autoload" onclick="tryAutoLoad()">🔄 Muat Ulang Data Awal</button>
+      <button class="btn-autoload" onclick="tryAutoLoad()"><i data-lucide="refresh-cw" class="ic"></i> Muat Ulang Data Awal</button>
     </div>
 
     <div class="card">
-      <div class="card-title">🚬 Rokok</div>
+      <div class="card-title"><span class="ic-chip"><i data-lucide="cigarette" class="ic"></i></span> Rokok</div>
       <table class="item-table">
         <thead><tr>
           <th style="width:38%">Item</th>
@@ -290,7 +309,7 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
     </div>
 
     <div class="card">
-      <div class="card-title">📦 Tambahan</div>
+      <div class="card-title"><span class="ic-chip"><i data-lucide="package" class="ic"></i></span> Tambahan</div>
       <table class="item-table">
         <thead><tr>
           <th style="width:38%">Item</th>
@@ -302,8 +321,8 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
         <tbody id="tbodyTambahan"></tbody>
       </table>
       <!-- Legend -->
-      <div class="legend" style="margin-top:10px;padding-top:8px;border-top:1px solid var(--br)">
-        <div class="legend-item"><div class="legend-dot" style="background:#1a3a5c"></div><span>Normal</span></div>
+      <div class="legend" style="margin-top:11px;padding-top:9px;border-top:1px solid var(--br)">
+        <div class="legend-item"><div class="legend-dot" style="background:#4338CA"></div><span>Normal</span></div>
         <div class="legend-item"><div class="legend-dot" style="background:#fffbeb;border:1px solid #fde68a"></div><span>Sisa = 0 (habis)</span></div>
         <div class="legend-item"><div class="legend-dot" style="background:#fff5f5;border:1px solid #fecaca"></div><span>Sisa minus</span></div>
         <div class="legend-item"><div class="legend-dot" style="background:#f4f6f8;border:1px solid #dce1e8"></div><span>Nilai 0</span></div>
@@ -311,12 +330,12 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
     </div>
 
     <div class="card">
-      <div class="card-title">📝 Catatan</div>
+      <div class="card-title"><span class="ic-chip"><i data-lucide="file-text" class="ic"></i></span> Catatan</div>
       <textarea id="inputCatatan" class="form-control" placeholder="Catatan tambahan shift ini..."></textarea>
     </div>
 
-    <button id="btnSave" class="btn-primary" onclick="saveAndShow()">📸 Simpan & Cetak Gambar Awal Shift</button>
-    <button class="btn-secondary" onclick="resetForm()">🔄 Reset Form</button>
+    <button id="btnSave" class="btn-primary" onclick="saveAndShow()"><i data-lucide="camera" class="ic"></i> Simpan & Cetak Gambar Awal Shift</button>
+    <button class="btn-secondary" onclick="resetForm()"><i data-lucide="refresh-cw" class="ic"></i> Reset Form</button>
   </div>
 
   <!-- ══ RIWAYAT TAB ══ -->
@@ -328,42 +347,42 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
   <div id="tab-items" class="tab-content">
 
     <div class="card">
-      <div class="card-title">🚬 Daftar Item Rokok</div>
+      <div class="card-title"><span class="ic-chip"><i data-lucide="cigarette" class="ic"></i></span> Daftar Item Rokok</div>
       <ul class="item-list" id="listRokok"></ul>
       <div class="add-row">
         <input type="text" id="newRokok" class="add-inp" placeholder="Nama item baru...">
-        <button class="btn-add" onclick="addItem('rokok')">+ Tambah</button>
+        <button class="btn-add" onclick="addItem('rokok')"><i data-lucide="plus" class="ic"></i> Tambah</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">📦 Daftar Item Tambahan</div>
+      <div class="card-title"><span class="ic-chip"><i data-lucide="package" class="ic"></i></span> Daftar Item Tambahan</div>
       <ul class="item-list" id="listTambahan"></ul>
       <div class="add-row">
         <input type="text" id="newTambahan" class="add-inp" placeholder="Nama item baru...">
-        <button class="btn-add" onclick="addItem('tambahan')">+ Tambah</button>
+        <button class="btn-add" onclick="addItem('tambahan')"><i data-lucide="plus" class="ic"></i> Tambah</button>
       </div>
     </div>
 
     <!-- Firebase Settings Card -->
     <div class="card">
-      <div class="card-title">🔗 Koneksi Database</div>
+      <div class="card-title"><span class="ic-chip"><i data-lucide="link" class="ic"></i></span> Koneksi Database</div>
 
       <!-- Status when connected -->
       <div id="fbConnected" class="hidden">
-        <div class="db-badge online">🟢 Terhubung ke Firebase</div>
+        <div class="db-badge online"><i data-lucide="wifi" class="ic"></i> Terhubung ke Firebase</div>
         <p class="db-url-txt" id="dbUrlDisplay"></p>
         <p style="font-size:12px;color:var(--tm);line-height:1.5">Data diakses bersama oleh semua pegawai secara real-time.</p>
-        <button class="btn-disconnect" onclick="disconnectDB()">🔌 Putuskan Koneksi</button>
+        <button class="btn-disconnect" onclick="disconnectDB()"><i data-lucide="power" class="ic"></i> Putuskan Koneksi</button>
       </div>
 
       <!-- Status when local -->
       <div id="fbLocal">
-        <div class="db-badge offline">🔴 Mode Lokal (hanya perangkat ini)</div>
+        <div class="db-badge offline"><i data-lucide="wifi-off" class="ic"></i> Mode Lokal (hanya perangkat ini)</div>
         <p style="font-size:12px;color:var(--tm);margin-bottom:0;line-height:1.5">Data hanya tersimpan di HP ini. Hubungkan Firebase agar semua pegawai bisa berbagi data.</p>
 
         <div class="firebase-setup">
-          <h4>⚙️ Cara Hubungkan Firebase (Gratis)</h4>
+          <h4><i data-lucide="settings" class="ic"></i> Cara Hubungkan Firebase (Gratis)</h4>
           <div class="step-row"><div class="step-dot">1</div>
             <p>Buka <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a></p></div>
           <div class="step-row"><div class="step-dot">2</div>
@@ -375,51 +394,56 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
           <div class="step-row"><div class="step-dot">5</div>
             <p>Salin URL database, contoh: <code>https://nama-rtdb.firebaseio.com</code></p></div>
 
-          <label class="fb-inp-lbl">URL DATABASE FIREBASE</label>
+          <label class="fb-inp-lbl">URL Database Firebase</label>
           <input type="url" id="dbUrlInput" class="fb-inp" placeholder="https://nama-default-rtdb.firebaseio.com">
-          <div class="fb-note">⚠️ Pastikan URL tidak diakhiri dengan garis miring (<code>/</code>). Bagikan file HTML ini ke semua pegawai — cukup isi URL sekali di tiap HP.</div>
-          <button class="btn-connect-sm" onclick="connectDB()">🔗 Hubungkan Database</button>
+          <div class="fb-note"><i data-lucide="alert-triangle" class="ic"></i><span>Pastikan URL tidak diakhiri dengan garis miring (<code>/</code>). Bagikan file HTML ini ke semua pegawai — cukup isi URL sekali di tiap HP.</span></div>
+          <button class="btn-connect-sm" onclick="connectDB()"><i data-lucide="link" class="ic"></i> Hubungkan Database</button>
         </div>
       </div>
 
     </div>
   </div><!-- end tab-items -->
+  </div><!-- end page-wrap -->
 
   <div class="bottom-nav">
-    <button class="nav-btn active" id="nav-form" onclick="switchTab('form')">
-      <span class="ni">📝</span>Form
-    </button>
-    <button class="nav-btn" id="nav-history" onclick="switchTab('history')">
-      <span class="ni">📋</span>Riwayat
-    </button>
-    <button class="nav-btn" id="nav-items" onclick="switchTab('items')">
-      <span class="ni">⚙️</span>Pengaturan
-    </button>
+    <div class="bottom-nav-inner">
+      <button class="nav-btn active" id="nav-form" onclick="switchTab('form')">
+        <span class="nav-pill"><i data-lucide="clipboard-list" class="ic"></i></span>Form
+      </button>
+      <button class="nav-btn" id="nav-history" onclick="switchTab('history')">
+        <span class="nav-pill"><i data-lucide="history" class="ic"></i></span>Riwayat
+      </button>
+      <button class="nav-btn" id="nav-items" onclick="switchTab('items')">
+        <span class="nav-pill"><i data-lucide="settings" class="ic"></i></span>Pengaturan
+      </button>
+    </div>
   </div>
 </div><!-- end appScreen -->
 
 <!-- ════════════════ ADMIN SCREEN ════════════════ -->
 <div id="adminScreen" class="hidden">
   <div class="adm-header">
-    <div>
-      <h2>🔒 Panel Admin</h2>
-      <p>Laporan Ringkasan Inventory</p>
+    <div class="adm-header-inner">
+      <div>
+        <h2><i data-lucide="lock" class="ic"></i> Panel Admin</h2>
+        <p>Laporan Ringkasan Inventory</p>
+      </div>
+      <button class="btn-close-adm" onclick="closeAdmin()"><i data-lucide="x" class="ic"></i> Tutup</button>
     </div>
-    <button class="btn-close-adm" onclick="closeAdmin()">✕ Tutup</button>
   </div>
 
   <div class="adm-filters">
     <div class="form-row" style="flex-wrap:wrap;gap:10px">
       <div style="flex:1;min-width:120px">
-        <div class="f-lbl">DARI TANGGAL</div>
+        <div class="f-lbl">Dari Tanggal</div>
         <input type="date" id="adminFrom" class="form-control">
       </div>
       <div style="flex:1;min-width:120px">
-        <div class="f-lbl">SAMPAI TANGGAL</div>
+        <div class="f-lbl">Sampai Tanggal</div>
         <input type="date" id="adminTo" class="form-control">
       </div>
       <div style="flex:1;min-width:110px">
-        <div class="f-lbl">SHIFT</div>
+        <div class="f-lbl">Shift</div>
         <select id="adminShift" class="form-control">
           <option value="">Semua</option>
           <option value="Siang">Siang</option>
@@ -427,12 +451,12 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
         </select>
       </div>
     </div>
-    <button class="btn-filter" onclick="loadAdminData()">🔍 Tampilkan Data</button>
+    <button class="btn-filter" onclick="loadAdminData()"><i data-lucide="search" class="ic"></i> Tampilkan Data</button>
   </div>
 
   <div class="adm-body" id="adminBody">
     <div class="empty" style="padding:40px 20px">
-      <div class="ico">📊</div>
+      <div class="ico"><i data-lucide="bar-chart-3" class="ic" style="width:46px;height:46px"></i></div>
       <h3>Pilih Filter</h3>
       <p>Atur rentang tanggal lalu tekan Tampilkan Data</p>
     </div>
@@ -443,28 +467,28 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
 <div class="overlay" id="modalSave">
   <div class="modal">
     <div class="modal-hdr">
-      <span class="modal-title">📸 Pratinjau Gambar</span>
-      <button class="modal-close" onclick="closeModal('modalSave')">✕</button>
+      <span class="modal-title"><i data-lucide="camera" class="ic"></i> Pratinjau Gambar</span>
+      <button class="modal-close" onclick="closeModal('modalSave')"><i data-lucide="x" class="ic"></i></button>
     </div>
     <img id="previewImg" src="" alt="Preview">
     <div class="save-hint" id="hintSave">
-      📲 Tekan tombol di bawah untuk menyimpan langsung ke Galeri HP.
+      Tekan tombol di bawah untuk menyimpan langsung ke Galeri HP.
     </div>
-    <button class="btn-dl-full" onclick="downloadImg('previewImg','laporan_inventory')">📲 Simpan ke Galeri</button>
+    <button class="btn-dl-full" onclick="downloadImg('previewImg','laporan_inventory')"><i data-lucide="download" class="ic"></i> Simpan ke Galeri</button>
   </div>
 </div>
 
 <div class="overlay" id="modalHist">
   <div class="modal">
     <div class="modal-hdr">
-      <span class="modal-title" id="histModalTitle">📋 Detail Riwayat</span>
-      <button class="modal-close" onclick="closeModal('modalHist')">✕</button>
+      <span class="modal-title" id="histModalTitle"><i data-lucide="clipboard-list" class="ic"></i> Detail Riwayat</span>
+      <button class="modal-close" onclick="closeModal('modalHist')"><i data-lucide="x" class="ic"></i></button>
     </div>
     <img id="histImg" src="" alt="Preview">
     <div class="save-hint" id="hintHist">
-      📲 Tekan tombol di bawah untuk menyimpan langsung ke Galeri HP.
+      Tekan tombol di bawah untuk menyimpan langsung ke Galeri HP.
     </div>
-    <button class="btn-dl-full" onclick="downloadImg('histImg','riwayat_inventory')">📲 Simpan ke Galeri</button>
+    <button class="btn-dl-full" onclick="downloadImg('histImg','riwayat_inventory')"><i data-lucide="download" class="ic"></i> Simpan ke Galeri</button>
   </div>
 </div>
 
@@ -477,8 +501,17 @@ textarea.form-control{resize:vertical;min-height:68px;font-size:14px}
 <!-- ════════════════ TOAST ════════════════ -->
 <div class="toast" id="toast"></div>
 
+<script src="https://unpkg.com/lucide@latest"></script>
 <script>
 'use strict';
+
+// ═══════════════════════════════════════════
+// ICON HELPER (safe against CDN load failure)
+// ═══════════════════════════════════════════
+function ic(name,cls){ return `<i data-lucide="${name}" class="ic ${cls||''}"></i>`; }
+function refreshIcons(){ try{ if (window.lucide) lucide.createIcons(); }catch(e){} }
+function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+refreshIcons();
 
 // ═══════════════════════════════════════════
 // CONFIG
@@ -497,6 +530,7 @@ let CFG = { rokok: [...DEFAULT_CFG.rokok], tambahan: [...DEFAULT_CFG.tambahan] }
 let _formDirty = false;
 let currentMode = 'awal';    // 'awal' | 'akhir'
 let _awalRecordKey = null;   // Firebase key of the matched awal-status record
+let _legacyItems = [];       // items from an awal record no longer in current CFG — kept visible so their data isn't lost
 
 // ═══════════════════════════════════════════
 // FIREBASE REST API
@@ -547,7 +581,7 @@ function _handleFbUnauth() {
   _fbUnauthShown = true;
   IS_LOCAL = true;
   updateDBStatusUI();
-  showToast('⚠️ Firebase ditolak (rules kedaluwarsa). Mode lokal aktif.');
+  showToast('Firebase ditolak (rules kedaluwarsa). Mode lokal aktif.', 'alert-triangle');
 }
 function lsGet(k){try{return JSON.parse(localStorage.getItem('inv_'+k));}catch{return null;}}
 function lsSet(k,v){localStorage.setItem('inv_'+k,JSON.stringify(v));}
@@ -582,7 +616,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (e.message && (e.message.includes('401') || e.message.includes('403') || e.message.includes('Permission'))) {
       IS_LOCAL = true;
       updateDBStatusUI();
-      setTimeout(() => showToast('⚠️ Firebase ditolak — aturan database perlu diperbarui. Mode lokal aktif.'), 500);
+      setTimeout(() => showToast('Firebase ditolak — aturan database perlu diperbarui. Mode lokal aktif.', 'alert-triangle'), 500);
     }
   } finally {
     buildForm();        // selalu tampilkan form
@@ -622,7 +656,7 @@ function updateDBStatusUI() {
 async function connectDB() {
   let url = document.getElementById('dbUrlInput').value.trim().replace(/\/$/,'');
   if (!url.startsWith('https://') || (!url.includes('firebaseio') && !url.includes('firebasedatabase.app'))) {
-    showToast('⚠️ URL Firebase tidak valid!'); return;
+    showToast('URL Firebase tidak valid!', 'alert-triangle'); return;
   }
   showLoading('Menghubungkan...');
   try {
@@ -637,10 +671,10 @@ async function connectDB() {
     showLoading('Sinkronisasi data...');
     try { await loadCFG(); buildForm(); renderItemLists(); } catch(e){}
     hideLoading();
-    showToast('✅ Berhasil terhubung ke Firebase!');
+    showToast('Berhasil terhubung ke Firebase!', 'check-circle');
   } catch(e) {
     hideLoading();
-    showToast('❌ Gagal terhubung. Periksa URL & internet.');
+    showToast('Gagal terhubung. Periksa URL & internet.', 'x-circle');
   }
 }
 
@@ -649,7 +683,7 @@ function disconnectDB() {
   DB_URL=''; IS_LOCAL=true;
   localStorage.removeItem('inv_db_url');
   updateDBStatusUI();
-  showToast('🔌 Diputuskan. Beralih ke mode lokal.');
+  showToast('Diputuskan. Beralih ke mode lokal.', 'power');
 }
 
 // ═══════════════════════════════════════════
@@ -670,8 +704,13 @@ async function saveCFG() { await dbSet('config', CFG); }
 // FORM BUILD
 // ═══════════════════════════════════════════
 function buildForm() {
+  // BUG FIX: preserve any values already typed in the form (and legacy rows)
+  // across a rebuild — previously buildForm() wiped the whole table whenever
+  // the item list changed mid-entry, silently discarding unsaved input.
+  const preserved = captureFormValues();
   fillTable('tbodyRokok',    CFG.rokok,    'r');
   fillTable('tbodyTambahan', CFG.tambahan, 't');
+  restoreFormValues(preserved);
   _formDirty = false;
 }
 function fillTable(tbId, items, pfx) {
@@ -682,8 +721,9 @@ function fillTable(tbId, items, pfx) {
     const id=`${pfx}${i}`;
     const tr=document.createElement('tr');
     tr.id=`row_${id}`;
+    tr.dataset.name=name;
     tr.innerHTML=`
-      <td>${name}</td>
+      <td>${esc(name)}</td>
       <td><input class="num-input" type="number" id="${id}_a" min="0" inputmode="numeric" oninput="onInput('${id}')"></td>
       <td><input class="num-input in-inp" type="number" id="${id}_i" min="0" inputmode="numeric" oninput="onInput('${id}')" ${inOutDis}></td>
       <td><input class="num-input out-inp" type="number" id="${id}_o" min="0" inputmode="numeric" oninput="onInput('${id}')" ${inOutDis}></td>
@@ -692,10 +732,76 @@ function fillTable(tbId, items, pfx) {
   });
 }
 
+// ─── captureFormValues / restoreFormValues: bug-fix helpers used by buildForm ───
+function captureFormValues(){
+  const map = {};
+  const legacy = [];
+  document.querySelectorAll('#tbodyRokok tr, #tbodyTambahan tr').forEach(tr=>{
+    const inputs = tr.querySelectorAll('input.num-input');
+    const name = tr.dataset.name;
+    if (!inputs.length || !name) return;
+    const vals = { a: inputs[0].value, i: inputs[1].value, o: inputs[2].value };
+    if (tr.classList.contains('row-legacy')) legacy.push({ name, cat: tr.dataset.cat, ...vals });
+    else map[name] = vals;
+  });
+  return { map, legacy };
+}
+function restoreFormValues(preserved){
+  const { map, legacy } = preserved;
+  document.querySelectorAll('#tbodyRokok tr, #tbodyTambahan tr').forEach(tr=>{
+    const name = tr.dataset.name;
+    const vals = map[name];
+    if (!vals) return;
+    const id = tr.id.replace('row_','');
+    const aEl=document.getElementById(`${id}_a`), iEl=document.getElementById(`${id}_i`), oEl=document.getElementById(`${id}_o`);
+    if (aEl && vals.a!=='') aEl.value = vals.a;
+    if (iEl && vals.i!=='' && !iEl.disabled) iEl.value = vals.i;
+    if (oEl && vals.o!=='' && !oEl.disabled) oEl.value = vals.o;
+    onInput(id);
+  });
+  legacy.forEach(li=>{
+    const pfx = li.cat==='ROKOK' ? 'xr' : 'xt';
+    const id = `${pfx}${_legacyItems.length}`;
+    renderLegacyRow({name:li.name,cat:li.cat}, id, {a:li.a,i:li.i,o:li.o});
+    _legacyItems.push({id, name:li.name, cat:li.cat});
+  });
+}
+
+// ─── Legacy rows: items that existed in a saved Awal record but were later
+// renamed/removed from the item list — kept visible during Akhir entry so
+// their values are never silently dropped (previously a real bug). ───
+function renderLegacyRow(item, id, preset){
+  preset = preset || {};
+  const tbId = item.cat === 'ROKOK' ? 'tbodyRokok' : 'tbodyTambahan';
+  const tb = document.getElementById(tbId);
+  if (!tb) return;
+  const tr = document.createElement('tr');
+  tr.id = `row_${id}`;
+  tr.className = 'row-legacy';
+  tr.dataset.name = item.name;
+  tr.dataset.cat = item.cat;
+  const aVal = preset.a !== undefined ? preset.a : (item.awal ?? '');
+  const iVal = preset.i !== undefined ? preset.i : '0';
+  const oVal = preset.o !== undefined ? preset.o : '0';
+  tr.innerHTML = `
+    <td>${esc(item.name)} <span class="legacy-tag">LAMA</span></td>
+    <td><input class="num-input" type="number" id="${id}_a" min="0" inputmode="numeric" value="${esc(String(aVal))}" oninput="onInput('${id}')" disabled></td>
+    <td><input class="num-input in-inp" type="number" id="${id}_i" min="0" inputmode="numeric" value="${esc(String(iVal))}" oninput="onInput('${id}')"></td>
+    <td><input class="num-input out-inp" type="number" id="${id}_o" min="0" inputmode="numeric" value="${esc(String(oVal))}" oninput="onInput('${id}')"></td>
+    <td class="sisa-cell" id="${id}_s">–</td>`;
+  tb.appendChild(tr);
+  onInput(id);
+}
+function clearLegacyRows(){
+  document.querySelectorAll('.row-legacy').forEach(tr=>tr.remove());
+  _legacyItems = [];
+}
+
 // ─── setMode: switch between Awal and Akhir phase ───
 function setMode(mode) {
   currentMode = mode;
   _awalRecordKey = null;
+  if (mode === 'awal') clearLegacyRows();
 
   // Toggle mode buttons
   document.getElementById('btnModeAwal').classList.toggle('active', mode === 'awal');
@@ -714,9 +820,12 @@ function setMode(mode) {
 
   // Update save button label
   const saveBtn = document.getElementById('btnSave');
-  if (saveBtn) saveBtn.textContent = mode === 'awal'
-    ? '📸 Simpan & Cetak Gambar Awal Shift'
-    : '💾 Simpan & Cetak Gambar Akhir Shift';
+  if (saveBtn) {
+    saveBtn.innerHTML = mode === 'awal'
+      ? `${ic('camera')} Simpan & Cetak Gambar Awal Shift`
+      : `${ic('save')} Simpan & Cetak Gambar Akhir Shift`;
+    refreshIcons();
+  }
 
   // Hide auto-load box (will show again after tryAutoLoad result)
   const box = document.getElementById('autoloadBox');
@@ -735,6 +844,7 @@ function setMode(mode) {
 //  1. Exact: date + shift + name + status='awal'
 //  2. Fuzzy: date + shift + name (tanpa cek status — untuk record lama)
 //  3. Shift-only: date + shift saja (ambil yang terbaru, kalau nama beda/kosong)
+let _autoLoadToken = 0;
 async function tryAutoLoad() {
   const date  = document.getElementById('inputDate').value;
   const shift = document.getElementById('inputShift').value;
@@ -744,10 +854,18 @@ async function tryAutoLoad() {
   const sub   = document.getElementById('autoloadSub');
 
   box.classList.remove('show','warn');
+  clearLegacyRows();
+
+  // Guard against overlapping calls (rapid name/date edits, or the reload
+  // button firing while a debounced auto-load is already in flight) —
+  // without this, two concurrent calls could each append their own legacy
+  // rows for the same item, duplicating them.
+  const _token = ++_autoLoadToken;
 
   showLoading('Mencari data awal shift...');
   try {
     const all = await dbGet('records') || {};
+    if (_token !== _autoLoadToken) return; // a newer call superseded this one
     const entries = Object.entries(all);
     hideLoading();
 
@@ -808,25 +926,37 @@ async function tryAutoLoad() {
           if (iEl) { iEl.value = '0'; }
           if (oEl) { oEl.value = '0'; }
           onInput(id);
+        } else {
+          // BUG FIX: item ini sudah di-rename/dihapus dari daftar CFG saat ini.
+          // Dulu nilainya langsung hilang tanpa jejak — sekarang ditampilkan
+          // sebagai baris "LAMA" terpisah agar datanya tetap terbawa & terlihat.
+          const cat = item.cat || (isRokok ? 'ROKOK' : 'TAMBAHAN');
+          const lid = `${cat==='ROKOK'?'xr':'xt'}${_legacyItems.length}`;
+          renderLegacyRow({name:item.name, cat, awal:item.awal}, lid);
+          _legacyItems.push({id:lid, name:item.name, cat});
         }
       });
 
       document.getElementById('inputCatatan').value = rec.catatan || '';
 
       box.className = 'autoload-box show';
-      msg.textContent = `✅ Data Awal Shift "${rec.name}" dimuat!`;
-      sub.textContent = `${fmtShort(rec.date)} · ${rec.shift} · Lanjutkan mengisi kolom In & Out. ${searchNote}`.trim();
+      msg.innerHTML = `${ic('check-circle')} Data Awal Shift "${esc(rec.name)}" dimuat!`;
+      let subTxt = `${fmtShort(rec.date)} · ${rec.shift} · Lanjutkan mengisi kolom In & Out. ${searchNote}`.trim();
+      if (_legacyItems.length) subTxt += ` ⚠ ${_legacyItems.length} item lama (tidak ada di daftar saat ini) tetap ditampilkan di bagian bawah tabel agar datanya tidak hilang.`;
+      sub.textContent = subTxt;
     } else {
       _awalRecordKey = null;
       box.className = 'autoload-box warn show';
-      msg.textContent = '⚠️ Data awal shift belum ditemukan';
+      msg.innerHTML = `${ic('alert-triangle')} Data awal shift belum ditemukan`;
       sub.textContent = `Tidak ada laporan Awal Shift untuk shift ${shift} tanggal ${fmtShort(date)}. Pastikan laporan Awal sudah disimpan terlebih dahulu.`;
     }
+    refreshIcons();
   } catch(e) {
     hideLoading();
     box.className = 'autoload-box warn show';
-    msg.textContent = '❌ Gagal memuat data awal shift';
+    msg.innerHTML = `${ic('x-circle')} Gagal memuat data awal shift`;
     sub.textContent = e.message;
+    refreshIcons();
   }
 }
 
@@ -852,15 +982,18 @@ function onInput(id) {
     return;
   }
   const sisa = (parseFloat(a)||0)+(parseFloat(i)||0)-(parseFloat(o)||0);
-  cell.textContent = sisa;
 
   if (sisa < 0) {
+    cell.textContent = sisa;
     cell.className='sisa-cell neg';
     if (row) { row.classList.remove('row-zero-sisa'); row.classList.add('row-neg-sisa'); }
   } else if (sisa === 0) {
+    cell.innerHTML = `0 ${ic('alert-triangle')}`;
     cell.className='sisa-cell zero';
     if (row) { row.classList.add('row-zero-sisa'); row.classList.remove('row-neg-sisa'); }
+    refreshIcons();
   } else {
+    cell.textContent = sisa;
     cell.className='sisa-cell';
     if (row) { row.classList.remove('row-zero-sisa','row-neg-sisa'); }
   }
@@ -892,11 +1025,23 @@ function validateForm() {
     });
   });
 
+  // Legacy rows (akhir mode only): In & Out wajib diisi, Awal sudah tetap (disabled)
+  if (currentMode === 'akhir') {
+    _legacyItems.forEach(li => {
+      ['i','o'].forEach(s => {
+        const el=document.getElementById(`${li.id}_${s}`);
+        if (!el) return;
+        if (el.value==='') { el.classList.add('err'); ok=false; first=first||el; }
+        else el.classList.remove('err');
+      });
+    });
+  }
+
   if (!ok) {
     const hint = currentMode === 'awal'
-      ? '⚠️ Kolom AWAL wajib diisi semua! (isi 0 jika tidak ada)'
-      : '⚠️ Semua kolom wajib diisi! (isi 0 jika tidak ada)';
-    showToast(hint);
+      ? 'Kolom AWAL wajib diisi semua! (isi 0 jika tidak ada)'
+      : 'Semua kolom wajib diisi! (isi 0 jika tidak ada)';
+    showToast(hint, 'alert-triangle');
     if (first) setTimeout(()=>first.scrollIntoView({behavior:'smooth',block:'center'}),100);
   }
   return ok;
@@ -914,6 +1059,10 @@ function collectData() {
   CFG.tambahan.forEach((name,i)=>{
     const id=`t${i}`;
     items.push({cat:'TAMBAHAN',name,awal:nv(id,'a'),inVal:nv(id,'i'),outVal:nv(id,'o'),sisa:document.getElementById(`${id}_s`).textContent});
+  });
+  // Legacy items (renamed/removed from CFG) — still carried through so data isn't lost
+  _legacyItems.forEach(li=>{
+    items.push({cat:li.cat,name:li.name,awal:nv(li.id,'a'),inVal:nv(li.id,'i'),outVal:nv(li.id,'o'),sisa:document.getElementById(`${li.id}_s`).textContent});
   });
   return {
     date:document.getElementById('inputDate').value,
@@ -946,23 +1095,25 @@ async function saveAndShow() {
     document.getElementById('previewImg').src=genImage(data);
     updateSaveHint('hintSave');
     openModal('modalSave');
-    const label = data.status === 'awal' ? '✅ Laporan Awal Shift disimpan!' : '✅ Laporan Akhir Shift disimpan!';
-    showToast(label);
-  } catch(e){ hideLoading(); showToast('❌ Gagal menyimpan: '+e.message); }
+    const label = data.status === 'awal' ? 'Laporan Awal Shift disimpan!' : 'Laporan Akhir Shift disimpan!';
+    showToast(label, 'check-circle');
+  } catch(e){ hideLoading(); showToast('Gagal menyimpan: '+e.message, 'x-circle'); }
 }
 
 function resetForm() {
   if (!confirm('Reset semua isian form?')) return;
   CFG.rokok.forEach((_,i)=>clearRow('r'+i));
   CFG.tambahan.forEach((_,i)=>clearRow('t'+i));
+  clearLegacyRows();
   document.getElementById('inputCatatan').value='';
   document.getElementById('inputName').classList.remove('err');
   // Reset back to awal mode
   _awalRecordKey = null;
   document.getElementById('autoloadBox').classList.remove('show','warn');
   if (currentMode !== 'awal') setMode('awal');
-  showToast('🔄 Form di-reset');
+  showToast('Form di-reset', 'refresh-cw');
 }
+
 function clearRow(id) {
   ['a','i','o'].forEach(s=>{
     const el=document.getElementById(`${id}_${s}`);
@@ -977,63 +1128,68 @@ function clearRow(id) {
 // ═══════════════════════════════════════════
 async function renderHistory() {
   const el=document.getElementById('historyList');
-  el.innerHTML=`<div class="empty"><div class="ico">⏳</div><h3>Memuat...</h3></div>`;
+  el.innerHTML=`<div class="empty"><div class="ico">${ic('loader-circle','spin-ic')}</div><h3>Memuat...</h3></div>`;
+  refreshIcons();
   try {
     const all=await dbGet('records')||{};
     const recs=Object.entries(all).map(([k,v])=>({key:k,...v}))
       .sort((a,b)=>new Date(b.savedAt)-new Date(a.savedAt));
     if (!recs.length){
-      el.innerHTML=`<div class="empty"><div class="ico">📋</div><h3>Belum Ada Riwayat</h3><p>Data yang disimpan akan muncul di sini</p></div>`;
+      el.innerHTML=`<div class="empty"><div class="ico">${ic('clipboard-list')}</div><h3>Belum Ada Riwayat</h3><p>Data yang disimpan akan muncul di sini</p></div>`;
+      refreshIcons();
       return;
     }
     el.innerHTML=recs.map(r=>{
       const bc = r.shift==='Siang'?'b-siang':'b-malam';
       const statusBadge = r.status==='awal'
-        ? '<span class="hist-badge b-awal" style="margin-left:6px">⏳ Awal</span>'
+        ? `<span class="hist-badge b-awal" style="margin-left:6px">${ic('hourglass')} Awal</span>`
         : r.status==='selesai'
-        ? '<span class="hist-badge b-selesai" style="margin-left:6px">✅ Selesai</span>'
+        ? `<span class="hist-badge b-selesai" style="margin-left:6px">${ic('check-circle')} Selesai</span>`
         : '';
       return `<div class="hist-card">
         <div class="hist-top">
-          <div class="hist-date">📅 ${fmtShort(r.date)}</div>
+          <div class="hist-date">${ic('calendar-days')} ${fmtShort(r.date)}</div>
           <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
             <div class="hist-badge ${bc}">${r.shift}</div>${statusBadge}
           </div>
         </div>
-        <div class="hist-name">👤 ${r.name||'—'}</div>
-        <div class="hist-time">🕐 ${new Date(r.savedAt).toLocaleString('id-ID')}</div>
+        <div class="hist-name">${ic('user')} ${esc(r.name)||'—'}</div>
+        <div class="hist-time">${ic('clock')} ${new Date(r.savedAt).toLocaleString('id-ID')}</div>
         <div class="hist-actions">
-          <button class="btn-sm btn-view" onclick="viewHist('${r.key}')">👁 Lihat</button>
-          <button class="btn-sm btn-dl"   onclick="dlHist('${r.key}')">⬇️ Unduh</button>
-          <button class="btn-sm btn-del"  onclick="delHist('${r.key}')">🗑</button>
+          <button class="btn-sm btn-view" onclick="viewHist('${r.key}')">${ic('eye')} Lihat</button>
+          <button class="btn-sm btn-dl"   onclick="dlHist('${r.key}')">${ic('download')} Unduh</button>
+          <button class="btn-sm btn-del"  onclick="delHist('${r.key}')">${ic('trash-2')}</button>
         </div>
       </div>`;
     }).join('');
+    refreshIcons();
   } catch(e){
-    el.innerHTML=`<div class="empty"><div class="ico">❌</div><h3>Gagal memuat</h3><p>${e.message}</p></div>`;
+    el.innerHTML=`<div class="empty"><div class="ico">${ic('x-circle')}</div><h3>Gagal memuat</h3><p>${esc(e.message)}</p></div>`;
+    refreshIcons();
   }
 }
 
 async function viewHist(key){
   showLoading('Memuat...');
   try{const r=await dbGet(`records/${key}`);hideLoading();
-    document.getElementById('histModalTitle').textContent=`${fmtShort(r.date)} · ${r.shift}`;
+    document.getElementById('histModalTitle').innerHTML=`${ic('clipboard-list')} ${esc(fmtShort(r.date))} · ${esc(r.shift)}`;
+    refreshIcons();
     document.getElementById('histImg').src=genImage(r);
     updateSaveHint('hintHist');
     openModal('modalHist');
-  }catch(e){hideLoading();showToast('❌ '+e.message);}
+  }catch(e){hideLoading();showToast(e.message,'x-circle');}
 }
 async function dlHist(key){
   showLoading('Memuat...');
   try{const r=await dbGet(`records/${key}`);hideLoading();
-    dlURL(genImage(r),`inventory_${r.date}_${r.shift}_${r.name||'x'}.png`);showToast('⬇️ Mengunduh...');
-  }catch(e){hideLoading();showToast('❌ '+e.message);}
+    dlURL(genImage(r),`inventory_${r.date}_${r.shift}_${r.name||'x'}.png`);showToast('Mengunduh...','download');
+  }catch(e){hideLoading();showToast(e.message,'x-circle');}
 }
 async function delHist(key){
   if(!confirm('Hapus data ini?'))return;
   showLoading('Menghapus...');
-  try{await dbDelete(`records/${key}`);hideLoading();showToast('🗑 Data dihapus');renderHistory();}
-  catch(e){hideLoading();showToast('❌ '+e.message);}
+  try{await dbDelete(`records/${key}`);hideLoading();showToast('Data dihapus','trash-2');renderHistory();}
+  catch(e){hideLoading();showToast(e.message,'x-circle');}
 }
 function downloadImg(imgId,pfx){
   const src=document.getElementById(imgId).src;
@@ -1048,8 +1204,9 @@ function updateSaveHint(hintId) {
   if (!el) return;
   const canWebShare = !!(navigator.canShare);
   el.innerHTML = canWebShare
-    ? '📲 Tekan <b>Simpan ke Galeri</b> — gambar akan tersimpan langsung di Foto HP kamu.'
-    : '💡 <b>iOS:</b> Tekan &amp; tahan gambar → "Simpan ke Foto"<br>📱 <b>Android:</b> Tekan Simpan ke Galeri (tersimpan di Downloads, lalu muncul di Galeri)';
+    ? `${ic('smartphone')} Tekan <b>Simpan ke Galeri</b> — gambar akan tersimpan langsung di Foto HP kamu.`
+    : `${ic('apple')} <b>iOS:</b> Tekan &amp; tahan gambar → "Simpan ke Foto"<br>${ic('smartphone')} <b>Android:</b> Tekan Simpan ke Galeri (tersimpan di Downloads, lalu muncul di Galeri)`;
+  refreshIcons();
 }
 
 // ─── saveImg: Web Share API → simpan ke Galeri HP, fallback ke download ───
@@ -1062,7 +1219,7 @@ async function saveImg(dataUrl, filename) {
       const file = new File([blob], filename, { type: 'image/png' });
       if (navigator.canShare({ files: [file] })) {
         await navigator.share({ files: [file], title: 'Laporan Inventory' });
-        showToast('✅ Gambar berhasil disimpan!');
+        showToast('Gambar berhasil disimpan!', 'check-circle');
         return;
       }
     } catch(e) {
@@ -1077,7 +1234,7 @@ async function saveImg(dataUrl, filename) {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  showToast('⬇️ Tersimpan di folder Downloads');
+  showToast('Tersimpan di folder Downloads', 'download');
 }
 
 // dlURL tetap dipakai oleh dlHist
@@ -1094,19 +1251,20 @@ function renderList(lid,items,cat){
   const ul=document.getElementById(lid);
   ul.innerHTML=!items.length
     ?'<li style="color:var(--tm);justify-content:center">Daftar kosong</li>'
-    :items.map((n,i)=>`<li><span>${i+1}. ${n}</span><button class="btn-danger" onclick="removeItem('${cat}',${i})">🗑 Hapus</button></li>`).join('');
+    :items.map((n,i)=>`<li><span>${i+1}. ${esc(n)}</span><button class="btn-danger" onclick="removeItem('${cat}',${i})">${ic('trash-2')} Hapus</button></li>`).join('');
+  refreshIcons();
 }
 async function addItem(cat){
   const id=cat==='rokok'?'newRokok':'newTambahan';
   const inp=document.getElementById(id);
   const name=inp.value.trim();
-  if(!name){showToast('⚠️ Nama tidak boleh kosong!');return;}
+  if(!name){showToast('Nama tidak boleh kosong!','alert-triangle');return;}
   const arr=cat==='rokok'?CFG.rokok:CFG.tambahan;
-  if(arr.map(x=>x.toLowerCase()).includes(name.toLowerCase())){showToast('⚠️ Item sudah ada!');return;}
+  if(arr.map(x=>x.toLowerCase()).includes(name.toLowerCase())){showToast('Item sudah ada!','alert-triangle');return;}
   arr.push(name);inp.value='';
   showLoading('Menyimpan...');
-  try{await saveCFG();hideLoading();renderItemLists();_formDirty=true;showToast(`✅ "${name}" ditambahkan!`);}
-  catch(e){arr.pop();hideLoading();showToast('❌ Gagal: '+e.message);}
+  try{await saveCFG();hideLoading();renderItemLists();_formDirty=true;showToast(`"${name}" ditambahkan!`,'check-circle');}
+  catch(e){arr.pop();hideLoading();showToast('Gagal: '+e.message,'x-circle');}
 }
 async function removeItem(cat,idx){
   const arr=cat==='rokok'?CFG.rokok:CFG.tambahan;
@@ -1114,8 +1272,8 @@ async function removeItem(cat,idx){
   if(!confirm(`Hapus item "${name}"?`))return;
   arr.splice(idx,1);
   showLoading('Menyimpan...');
-  try{await saveCFG();hideLoading();renderItemLists();_formDirty=true;showToast(`🗑 "${name}" dihapus`);}
-  catch(e){arr.splice(idx,0,name);hideLoading();showToast('❌ Gagal: '+e.message);}
+  try{await saveCFG();hideLoading();renderItemLists();_formDirty=true;showToast(`"${name}" dihapus`,'trash-2');}
+  catch(e){arr.splice(idx,0,name);hideLoading();showToast('Gagal: '+e.message,'x-circle');}
 }
 
 // ═══════════════════════════════════════════
@@ -1124,7 +1282,7 @@ async function removeItem(cat,idx){
 function promptAdmin(){
   const code=prompt('Masukkan kode admin:');
   if(code==='112233'){show('adminScreen');}
-  else if(code!==null){showToast('❌ Kode salah!');}
+  else if(code!==null){showToast('Kode salah!','x-circle');}
 }
 function closeAdmin(){hide('adminScreen');}
 
@@ -1132,8 +1290,8 @@ async function loadAdminData(){
   const from=document.getElementById('adminFrom').value;
   const to  =document.getElementById('adminTo').value;
   const shft=document.getElementById('adminShift').value;
-  if(!from||!to){showToast('⚠️ Lengkapi rentang tanggal!');return;}
-  if(from>to){showToast('⚠️ Tanggal awal > akhir!');return;}
+  if(!from||!to){showToast('Lengkapi rentang tanggal!','alert-triangle');return;}
+  if(from>to){showToast('Tanggal awal > akhir!','alert-triangle');return;}
 
   showLoading('Mengambil data...');
   const body=document.getElementById('adminBody');
@@ -1143,7 +1301,8 @@ async function loadAdminData(){
     hideLoading();
 
     if(!recs.length){
-      body.innerHTML=`<div class="empty" style="padding:40px 20px"><div class="ico">📭</div><h3>Tidak Ada Data</h3><p>Tidak ada laporan untuk filter ini</p></div>`;
+      body.innerHTML=`<div class="empty" style="padding:40px 20px"><div class="ico">${ic('inbox')}</div><h3>Tidak Ada Data</h3><p>Tidak ada laporan untuk filter ini</p></div>`;
+      refreshIcons();
       return;
     }
 
@@ -1178,35 +1337,37 @@ async function loadAdminData(){
     ['ROKOK','TAMBAHAN','LAIN'].forEach(cat=>{
       const ci=Object.entries(sumMap).filter(([,v])=>v.cat===cat);
       if(!ci.length)return;
-      const ico=cat==='ROKOK'?'🚬':cat==='TAMBAHAN'?'📦':'📌';
-      itemRows+=`<tr class="cat-row"><td colspan="4">${ico} ${cat}</td></tr>`;
+      const icoName=cat==='ROKOK'?'cigarette':cat==='TAMBAHAN'?'package':'tag';
+      itemRows+=`<tr class="cat-row"><td colspan="4"><span>${ic(icoName)} ${cat}</span></td></tr>`;
       ci.forEach(([name,v])=>{
         const net=v.inT-v.outT;
         const nc=net>0?'net-pos':net<0?'net-neg':'net-z';
-        itemRows+=`<tr><td>${name}</td><td><b>${v.inT}</b></td><td><b>${v.outT}</b></td><td class="${nc}">${net>0?'+':''}${net}</td></tr>`;
+        itemRows+=`<tr><td>${esc(name)}</td><td><b>${v.inT}</b></td><td><b>${v.outT}</b></td><td class="${nc}">${net>0?'+':''}${net}</td></tr>`;
       });
     });
 
     const pawRows=Object.entries(pawMap).sort((a,b)=>b[1].count-a[1].count)
-      .map(([n,v])=>`<tr><td>${n}</td><td>${v.count}</td><td><b>${v.inT}</b></td><td><b>${v.outT}</b></td></tr>`).join('');
+      .map(([n,v])=>`<tr><td>${esc(n)}</td><td>${v.count}</td><td><b>${v.inT}</b></td><td><b>${v.outT}</b></td></tr>`).join('');
 
     body.innerHTML=`
-      <div class="sum-meta">📅 ${fmtShort(from)} – ${fmtShort(to)} &nbsp;|&nbsp; 🔄 ${shft||'Semua Shift'} &nbsp;|&nbsp; 📑 ${recs.length} laporan</div>
-      <p class="sec-title">📊 Ringkasan per Item</p>
+      <div class="sum-meta"><span>${ic('calendar-days')} ${esc(fmtShort(from))} – ${esc(fmtShort(to))}</span><span>${ic('repeat')} ${esc(shft||'Semua Shift')}</span><span>${ic('files')} ${recs.length} laporan</span></div>
+      <p class="sec-title">${ic('bar-chart-3')} Ringkasan per Item</p>
       <div class="tbl-wrap"><table class="adm-table">
         <thead><tr><th>Item</th><th>Total IN</th><th>Total OUT</th><th>Net (IN–OUT)</th></tr></thead>
         <tbody>${itemRows}
           <tr class="tot-row"><td>TOTAL</td><td>${totIn}</td><td>${totOut}</td><td>${totIn-totOut>=0?'+':''}${totIn-totOut}</td></tr>
         </tbody>
       </table></div>
-      <p class="sec-title" style="margin-top:20px">👥 Ringkasan per Pegawai</p>
+      <p class="sec-title" style="margin-top:20px">${ic('users')} Ringkasan per Pegawai</p>
       <div class="tbl-wrap"><table class="adm-table">
         <thead><tr><th>Nama Pegawai</th><th>Laporan</th><th>Total IN</th><th>Total OUT</th></tr></thead>
         <tbody>${pawRows}</tbody>
       </table></div>`;
+    refreshIcons();
   }catch(e){
     hideLoading();
-    body.innerHTML=`<div class="empty"><div class="ico">❌</div><h3>Gagal memuat</h3><p>${e.message}</p></div>`;
+    body.innerHTML=`<div class="empty"><div class="ico">${ic('x-circle')}</div><h3>Gagal memuat</h3><p>${esc(e.message)}</p></div>`;
+    refreshIcons();
   }
 }
 
@@ -1215,14 +1376,12 @@ async function loadAdminData(){
 // ═══════════════════════════════════════════
 async function switchTab(tab){
   document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById(`tab-${tab}`).classList.add('active');
-  document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`).classList.add('active');
   document.getElementById(`nav-${tab}`).classList.add('active');
 
   if(tab==='history') renderHistory();
-  if(tab==='form'&&_formDirty){buildForm();showToast('ℹ️ Daftar item telah diperbarui');}
+  if(tab==='form'&&_formDirty){buildForm();showToast('Daftar item telah diperbarui','info');}
   if(tab==='items'){
     updateDBStatusUI();
     showLoading('Memuat...');
@@ -1240,8 +1399,13 @@ document.addEventListener('click',e=>{if(e.target.classList.contains('overlay'))
 function showLoading(msg){document.getElementById('loadingMsg').textContent=msg||'Memuat...';document.getElementById('loadingOverlay').classList.add('show');}
 function hideLoading(){document.getElementById('loadingOverlay').classList.remove('show');}
 let _tt;
-function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2800);}
-function show(id){document.getElementById(id).classList.remove('hidden');}
+function showToast(msg,icon){
+  const el=document.getElementById('toast');
+  el.innerHTML=(icon?ic(icon):'')+`<span>${esc(msg)}</span>`;
+  el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2800);
+  refreshIcons();
+}
+function show(id){document.getElementById(id).classList.remove('hidden');refreshIcons();}
 function hide(id){document.getElementById(id).classList.add('hidden');}
 
 // ═══════════════════════════════════════════
@@ -1252,8 +1416,11 @@ function fmtDate(iso){return new Date(iso+'T00:00:00').toLocaleDateString('id-ID
 function fmtShort(iso){return new Date(iso+'T00:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});}
 
 // ═══════════════════════════════════════════
-// CANVAS IMAGE GENERATOR
+// CANVAS IMAGE GENERATOR (colors follow the app theme via CSS variables)
 // ═══════════════════════════════════════════
+function themeColor(name,fallback){
+  try{ const v=getComputedStyle(document.documentElement).getPropertyValue(name).trim(); return v||fallback; }catch(e){ return fallback; }
+}
 function genImage(data){
   // Canvas: 560px wide × auto height, 2× DPR for sharpness
   const DPR=2, W=560*DPR, PAD=12*DPR, TW=W-PAD*2;
@@ -1267,19 +1434,24 @@ function genImage(data){
   const cv=document.createElement('canvas');cv.width=W;cv.height=H;
   const ctx=cv.getContext('2d');
 
+  const cPrimary=themeColor('--bd','#4338CA'), cPrimaryBg=themeColor('--bl','#E0E7FF'), cPrimaryBorder='#C7BFFF';
+  const cAmberBg=themeColor('--amb','#FFFBEB'), cAmber=themeColor('--am','#D97706');
+  const cRedBg='#fff5f5', cRed=themeColor('--rd','#DC2626');
+  const cMuted=themeColor('--tm','#6b7280'), cText='#374151', cLine='#e5e7eb';
+
   ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
 
   // ── Header bar ──
   const hdrLabel=data.status==='awal'?'LAPORAN AWAL SHIFT'
     :data.status==='selesai'?'LAPORAN AKHIR SHIFT':'FORM PENGECEKAN INVENTORY';
-  ctx.fillStyle='#1a3a5c';ctx.fillRect(0,0,W,HDR_H);
+  ctx.fillStyle=cPrimary;ctx.fillRect(0,0,W,HDR_H);
   sf(ctx,DPR,'bold',17,'Arial');ctx.fillStyle='#fff';ctx.textAlign='center';
   ctx.fillText(hdrLabel,W/2,HDR_H/2+7*DPR);
 
   // ── Meta strip — 3 kolom: Tanggal | Shift | Nama ──
   const MY=HDR_H;
-  ctx.fillStyle='#eef4ff';ctx.fillRect(0,MY,W,META_H);
-  ctx.strokeStyle='#bfdbfe';ctx.lineWidth=1.5*DPR;
+  ctx.fillStyle=cPrimaryBg;ctx.fillRect(0,MY,W,META_H);
+  ctx.strokeStyle=cPrimaryBorder;ctx.lineWidth=1.5*DPR;
   ctx.beginPath();ctx.moveTo(0,MY+META_H);ctx.lineTo(W,MY+META_H);ctx.stroke();
 
   // Kolom: 48% tanggal | 22% shift | 30% nama
@@ -1287,27 +1459,27 @@ function genImage(data){
   const c1X=PAD,c2X=c1X+c1W,c3X=c2X+c2W;
   const lblY=MY+18*DPR,valY=MY+50*DPR;
 
-  ctx.strokeStyle='#bfdbfe';ctx.lineWidth=1*DPR;
+  ctx.strokeStyle=cPrimaryBorder;ctx.lineWidth=1*DPR;
   [c2X,c3X].forEach(x=>{
     ctx.beginPath();ctx.moveTo(x,MY+8*DPR);ctx.lineTo(x,MY+META_H-8*DPR);ctx.stroke();
   });
 
   // Tanggal
-  sf(ctx,DPR,'bold',8.5,'Arial');ctx.fillStyle='#6b7280';ctx.textAlign='left';
+  sf(ctx,DPR,'bold',8.5,'Arial');ctx.fillStyle=cMuted;ctx.textAlign='left';
   ctx.fillText('HARI / TANGGAL',c1X,lblY);
-  sf(ctx,DPR,'bold',15,'Arial');ctx.fillStyle='#1a3a5c';
+  sf(ctx,DPR,'bold',15,'Arial');ctx.fillStyle=cPrimary;
   ctx.fillText(fmtDate(data.date),c1X,valY);
 
   // Shift
-  sf(ctx,DPR,'bold',8.5,'Arial');ctx.fillStyle='#6b7280';ctx.textAlign='center';
+  sf(ctx,DPR,'bold',8.5,'Arial');ctx.fillStyle=cMuted;ctx.textAlign='center';
   ctx.fillText('SHIFT',c2X+c2W/2,lblY);
-  sf(ctx,DPR,'bold',19,'Arial');ctx.fillStyle='#1a3a5c';
+  sf(ctx,DPR,'bold',19,'Arial');ctx.fillStyle=cPrimary;
   ctx.fillText(data.shift,c2X+c2W/2,valY);
 
   // Nama
-  sf(ctx,DPR,'bold',8.5,'Arial');ctx.fillStyle='#6b7280';ctx.textAlign='left';
+  sf(ctx,DPR,'bold',8.5,'Arial');ctx.fillStyle=cMuted;ctx.textAlign='left';
   ctx.fillText('NAMA PEGAWAI',c3X+8*DPR,lblY);
-  sf(ctx,DPR,'bold',15,'Arial');ctx.fillStyle='#1a3a5c';
+  sf(ctx,DPR,'bold',15,'Arial');ctx.fillStyle=cPrimary;
   ctx.fillText(data.name||'—',c3X+8*DPR,valY);
 
   // ── Tabel ──
@@ -1317,7 +1489,7 @@ function genImage(data){
   const cx=[TX+CI/2,TX+CI+CN*.5,TX+CI+CN*1.5,TX+CI+CN*2.5,TX+CI+CN*3.5];
 
   // Table header
-  ctx.fillStyle='#1a3a5c';ctx.fillRect(TX,TY,TW,TH_H);
+  ctx.fillStyle=cPrimary;ctx.fillRect(TX,TY,TW,TH_H);
   sf(ctx,DPR,'bold',12,'Arial');ctx.fillStyle='#fff';
   ctx.textAlign='left';ctx.fillText('ITEM',TX+7*DPR,TY+TH_H/2+5*DPR);
   ctx.textAlign='center';
@@ -1326,19 +1498,19 @@ function genImage(data){
   let ry=TY+TH_H,ri=0;
 
   function catRow(lbl){
-    ctx.fillStyle='#dbeafe';ctx.fillRect(TX,ry,TW,CAT_H);
-    sf(ctx,DPR,'bold',11,'Arial');ctx.fillStyle='#1a3a5c';ctx.textAlign='left';
+    ctx.fillStyle=cPrimaryBg;ctx.fillRect(TX,ry,TW,CAT_H);
+    sf(ctx,DPR,'bold',11,'Arial');ctx.fillStyle=cPrimary;ctx.textAlign='left';
     ctx.fillText(lbl,TX+7*DPR,ry+CAT_H/2+4*DPR);ry+=CAT_H;
   }
 
   function itemRow(item){
     const sn=parseFloat(item.sisa);
-    const rowBg=(!isNaN(sn)&&sn===0)?'#fffbeb':(!isNaN(sn)&&sn<0)?'#fff5f5':ri%2===0?'#f8faff':'#fff';
+    const rowBg=(!isNaN(sn)&&sn===0)?cAmberBg:(!isNaN(sn)&&sn<0)?cRedBg:ri%2===0?'#f8faff':'#fff';
     ctx.fillStyle=rowBg;ctx.fillRect(TX,ry,TW,ROW_H);
 
     // Nama item — 13px
     sf(ctx,DPR,'600',13,'Arial');ctx.textAlign='left';
-    ctx.fillStyle=(!isNaN(sn)&&sn===0)?'#92400e':(!isNaN(sn)&&sn<0)?'#dc2626':'#374151';
+    ctx.fillStyle=(!isNaN(sn)&&sn===0)?'#92400e':(!isNaN(sn)&&sn<0)?cRed:cText;
     ctx.fillText(item.name,TX+7*DPR,ry+ROW_H/2+5*DPR);
 
     // Awal / In / Out — 16px bold
@@ -1351,7 +1523,7 @@ function genImage(data){
       }
       const isZ=v==='0'||v===0;
       sf(ctx,DPR,isZ?'400':'700',16,'Arial');
-      ctx.fillStyle=isZ?'#b0bbc8':'#374151';
+      ctx.fillStyle=isZ?'#b0bbc8':cText;
       ctx.fillText(v===''?'—':String(v),cx[ci+1],ry+ROW_H/2+5*DPR);
     });
 
@@ -1361,16 +1533,16 @@ function genImage(data){
       :String(item.sisa);
     const snD=parseFloat(sisaD);
     sf(ctx,DPR,'bold',18,'Arial');
-    ctx.fillStyle=(sisaD==='–'||isNaN(snD))?'#9ca3af':snD<0?'#dc2626':snD===0?'#d97706':'#1a3a5c';
-    ctx.fillText(snD===0?sisaD+' ⚠':sisaD,cx[4],ry+ROW_H/2+5*DPR);
+    ctx.fillStyle=(sisaD==='–'||isNaN(snD))?'#9ca3af':snD<0?cRed:snD===0?cAmber:cPrimary;
+    ctx.fillText(snD===0?sisaD+' !':sisaD,cx[4],ry+ROW_H/2+5*DPR);
 
-    ctx.strokeStyle='#e5e7eb';ctx.lineWidth=0.8*DPR;
+    ctx.strokeStyle=cLine;ctx.lineWidth=0.8*DPR;
     ctx.beginPath();ctx.moveTo(TX,ry+ROW_H);ctx.lineTo(TX+TW,ry+ROW_H);ctx.stroke();
     ry+=ROW_H;ri++;
   }
 
-  catRow('🚬  ROKOK');    rokok.forEach(itemRow);
-  catRow('📦  TAMBAHAN'); tambahan.forEach(itemRow);
+  catRow('ROKOK');    rokok.forEach(itemRow);
+  catRow('TAMBAHAN'); tambahan.forEach(itemRow);
 
   const tBot=ry;
   // Garis kolom vertikal
@@ -1378,12 +1550,12 @@ function genImage(data){
   let sx=TX+CI;
   for(let c=0;c<4;c++){ctx.beginPath();ctx.moveTo(sx,TY);ctx.lineTo(sx,tBot);ctx.stroke();sx+=CN;}
   // Border tabel
-  ctx.strokeStyle='#1a3a5c';ctx.lineWidth=1.5*DPR;ctx.strokeRect(TX,TY,TW,tBot-TY);
+  ctx.strokeStyle=cPrimary;ctx.lineWidth=1.5*DPR;ctx.strokeRect(TX,TY,TW,tBot-TY);
 
   // Catatan
   if(data.catatan){
     let cy=tBot+11*DPR;
-    sf(ctx,DPR,'bold',10,'Arial');ctx.fillStyle='#374151';ctx.textAlign='left';
+    sf(ctx,DPR,'bold',10,'Arial');ctx.fillStyle=cText;ctx.textAlign='left';
     ctx.fillText('Catatan:',TX,cy);cy+=14*DPR;
     sf(ctx,DPR,'normal',10,'Arial');ctx.fillStyle='#4b5563';
     wrapTxt(ctx,data.catatan,TW-6*DPR).forEach(l=>{ctx.fillText(l,TX+4*DPR,cy);cy+=14*DPR;});
